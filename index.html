@@ -1,0 +1,1488 @@
+<!DOCTYPE html>
+<html lang="en" data-color-mode="light" data-light-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Azure Application Hosting Options &mdash; Platform Selection Guide</title>
+<link href="https://unpkg.com/@primer/css@21/dist/primer.css" rel="stylesheet">
+<style>
+:root{
+  --az:#0078d4; --az-dark:#005a9e; --az-deep:#004578; --az-navy:#243a5e;
+  --az-cyan:#50e6ff; --az-purple:#8661c5; --az-green:#107c10; --az-amber:#9a6700;
+  --az-red:#d13438; --az-teal:#008575;
+  --line:#d0d7de; --muted:#656d76; --ink:#1f2328; --surface:#f6f8fa;
+  --hero-gradient:linear-gradient(135deg,#0b2545 0%,#12395f 45%,#0078d4 100%);
+}
+*{box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif;margin:0;scroll-behavior:smooth;color:var(--ink);background:#fff}
+.container-xl{max-width:1280px;margin:0 auto;width:100%}
+.px-3{padding-left:16px;padding-right:16px}
+
+/* ---------- nav ---------- */
+.top-nav{background:#0b2545;border-bottom:1px solid #1d4370;padding:10px 0;position:sticky;top:0;z-index:200}
+.top-nav a{color:#e8f1fa;text-decoration:none;font-size:13px;font-weight:500;padding:6px 10px;border-radius:6px}
+.top-nav a:hover{background:#17375e}
+.nav-inner{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+.nav-logo{font-weight:700;font-size:15px;margin-right:14px;color:#fff}
+.nav-logo .dot{color:var(--az-cyan)}
+
+/* ---------- hero ---------- */
+.hero{background:var(--hero-gradient);color:#f0f6fc;padding:72px 0 60px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-55%;right:-12%;width:620px;height:620px;background:radial-gradient(circle,rgba(80,230,255,.22) 0%,transparent 70%);border-radius:50%}
+.hero::after{content:'';position:absolute;bottom:-70%;left:-10%;width:520px;height:520px;background:radial-gradient(circle,rgba(134,97,197,.20) 0%,transparent 70%);border-radius:50%}
+.hero .eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:2px;color:var(--az-cyan);margin:0 0 12px;font-weight:700;position:relative}
+.hero h1{font-size:42px;font-weight:800;line-height:1.1;max-width:920px;position:relative;margin:0}
+.hero h1 .highlight{color:var(--az-cyan)}
+.hero .subtitle{font-size:18px;color:#c3d4e6;max-width:840px;margin-top:16px;line-height:1.6;position:relative}
+.hero .badge-row{margin-top:26px;display:flex;gap:8px;flex-wrap:wrap;position:relative}
+.hero .pill{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.28);color:#eaf4ff;font-size:12px;font-weight:600;padding:5px 12px;border-radius:20px;backdrop-filter:blur(4px)}
+.hero-stats{display:flex;gap:40px;flex-wrap:wrap;margin-top:34px;position:relative}
+.hero-stats div span{display:block}
+.hero-stats .n{font-size:28px;font-weight:800;color:#fff;line-height:1}
+.hero-stats .l{font-size:12px;color:#9fb8d0;margin-top:6px;text-transform:uppercase;letter-spacing:1px;font-weight:600}
+
+/* ---------- sections ---------- */
+.section{padding:52px 0}
+.section-alt{background-color:var(--surface)}
+.section-title{font-size:30px;font-weight:700;margin:0 0 8px}
+.section-lead{font-size:17px;color:var(--muted);margin:0 0 30px;max-width:860px;line-height:1.6}
+.block-title{font-size:19px;font-weight:700;margin:34px 0 14px;padding-bottom:8px;border-bottom:2px solid var(--line)}
+.block-title:first-of-type{margin-top:8px}
+
+/* ---------- cards ---------- */
+.feature-card{border:1px solid var(--line);border-radius:12px;padding:22px;height:100%;transition:box-shadow .2s,border-color .2s;background:#fff}
+.feature-card:hover{border-color:var(--az);box-shadow:0 4px 14px rgba(0,120,212,.13)}
+.feature-card h3{font-size:16px;font-weight:650;margin:0 0 10px}
+.feature-card p{font-size:13.5px;color:var(--muted);line-height:1.55;margin:0 0 8px}
+.feature-card p:last-child{margin-bottom:0}
+.feature-card ul{margin:8px 0 0;padding-left:18px}
+.feature-card li{font-size:13.5px;color:var(--muted);line-height:1.6;margin-bottom:5px}
+.feature-card .k{color:var(--ink);font-weight:600}
+
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+
+/* ---------- callouts ---------- */
+.callout{border-left:4px solid var(--az);background:#eaf4fd;border-radius:0 8px 8px 0;padding:16px 22px;margin:18px 0}
+.callout p{font-size:14.5px;line-height:1.6;color:#20313f;margin:0}
+.callout strong{color:var(--az-deep)}
+.callout-warn{border-left-color:var(--az-amber);background:#fff8c5}
+.callout-warn strong{color:var(--az-amber)}
+.callout-success{border-left-color:var(--az-green);background:#dff0d8}
+.callout-success strong{color:#0a5c0a}
+.callout-danger{border-left-color:var(--az-red);background:#fdeceb}
+.callout-danger strong{color:#a4262c}
+.callout-purple{border-left-color:var(--az-purple);background:#f1ecfa}
+.callout-purple strong{color:#5c3f91}
+
+/* ---------- plain table ---------- */
+table.gov-table{width:100%;border-collapse:collapse;font-size:13.5px;margin:14px 0;background:#fff}
+table.gov-table th{background:var(--surface);border-bottom:2px solid var(--line);padding:11px 12px;text-align:left;font-weight:650;color:var(--ink)}
+table.gov-table td{padding:11px 12px;border-bottom:1px solid var(--line);color:var(--muted);vertical-align:top}
+table.gov-table tr:hover td{background:#f9fbfd}
+table.gov-table td strong{color:var(--ink)}
+
+/* ---------- comparison matrix (checkmark style) ---------- */
+.matrix-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:#fff;margin:14px 0 6px}
+table.matrix{border-collapse:separate;border-spacing:0;width:100%;min-width:1080px;font-size:12.5px}
+table.matrix th,table.matrix td{padding:9px 8px;text-align:center;border-bottom:1px solid #e3e8ee;white-space:nowrap}
+table.matrix thead th{background:var(--az);color:#fff;font-weight:650;font-size:12px;line-height:1.3;white-space:normal;vertical-align:bottom;padding:12px 8px;position:sticky;top:0;z-index:3}
+table.matrix thead th:first-child{text-align:left;background:var(--az-deep);left:0;z-index:5;min-width:210px}
+table.matrix tbody th{text-align:left;font-weight:600;color:var(--ink);background:#fff;position:sticky;left:0;z-index:2;min-width:210px;border-right:1px solid #e3e8ee}
+table.matrix tbody tr:nth-child(even) th,table.matrix tbody tr:nth-child(even) td{background:#eef3fb}
+table.matrix tbody tr:hover th,table.matrix tbody tr:hover td{background:#ddecfb}
+table.matrix tbody tr:last-child th,table.matrix tbody tr:last-child td{border-bottom:none}
+.yes{color:var(--az-green);font-size:15px;font-weight:700}
+.no{color:#c9ced6;font-size:14px}
+.na{color:#8c959f;font-size:11px;font-weight:600;letter-spacing:.3px}
+.qual{display:block;font-size:10px;color:var(--muted);font-weight:500;margin-top:2px;white-space:normal;line-height:1.25}
+.matrix-note{font-size:12px;color:var(--muted);margin:4px 0 26px}
+.lvl{display:inline-block;font-size:10.5px;font-weight:700;padding:2px 9px;border-radius:12px;letter-spacing:.3px}
+.lvl-low{background:#dff0d8;color:#0a5c0a}
+.lvl-med{background:#fff4ce;color:#7a5200}
+.lvl-high{background:#fdeceb;color:#a4262c}
+
+/* ---------- tabs ---------- */
+.tabbar{display:flex;gap:6px;flex-wrap:wrap;border-bottom:2px solid var(--line);padding-bottom:0;margin:0 0 26px}
+.tabbtn{appearance:none;border:1px solid transparent;border-bottom:none;background:transparent;font:inherit;font-size:13.5px;font-weight:600;color:var(--muted);padding:10px 14px;border-radius:8px 8px 0 0;cursor:pointer;position:relative;top:2px;transition:background .15s,color .15s}
+.tabbtn:hover{background:#eef3fb;color:var(--az-deep)}
+.tabbtn.is-active{background:#fff;border-color:var(--line);color:var(--az-deep);box-shadow:inset 0 3px 0 var(--az)}
+.panel{display:none;animation:fade .25s ease}
+.panel.is-active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* ---------- service header ---------- */
+.svc-head{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:6px}
+.svc-eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:1.6px;font-weight:700;color:var(--az);display:block;margin-bottom:6px}
+.svc-title{font-size:26px;font-weight:700;margin:0}
+.svc-lead{font-size:15.5px;color:var(--muted);line-height:1.6;max-width:860px;margin:10px 0 0}
+.svc-best{background:#eaf4fd;border:1px solid #b6daf7;color:var(--az-deep);font-size:12px;font-weight:650;padding:7px 14px;border-radius:20px;white-space:nowrap}
+
+/* ---------- diagram ---------- */
+.diagram-shell{display:grid;grid-template-columns:1fr 290px;gap:18px;align-items:start;margin:14px 0 6px}
+.diagram-box{border:1px solid var(--line);border-radius:12px;background:#fff;padding:10px;overflow-x:auto}
+.diagram-box svg{display:block;width:100%;min-width:760px;height:auto}
+.diagram-info{border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:18px;position:sticky;top:70px}
+.diagram-info .di-kind{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--az);display:block;margin-bottom:6px}
+.diagram-info .di-title{font-size:15px;font-weight:700;margin:0 0 8px;color:var(--ink)}
+.diagram-info .di-body{font-size:13px;line-height:1.6;color:var(--muted);margin:0}
+.diagram-info.is-idle .di-title{color:var(--muted)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;margin:10px 0 0;font-size:11.5px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:11px;height:11px;border-radius:3px;display:inline-block;border:1.5px solid}
+.lg-client{background:#f6f8fa;border-color:#8c959f}
+.lg-edge{background:#ddf4ff;border-color:#0078d4}
+.lg-compute{background:#e6e0f8;border-color:#8661c5}
+.lg-data{background:#dbf4ea;border-color:#107c10}
+.lg-ops{background:#fff4ce;border-color:#9a6700}
+svg .zone rect{fill:#f7fafd;stroke:#c3d9ee;stroke-dasharray:6 5;stroke-width:1.5}
+svg .zone text{fill:#5a7fa5;font-size:11px;font-weight:700;letter-spacing:.4px}
+svg .edge{fill:none;stroke:#b7c3d0;stroke-width:1.8;stroke-dasharray:7 5;animation:dash 1.1s linear infinite}
+@keyframes dash{to{stroke-dashoffset:-24}}
+svg .dot{fill:var(--az-cyan);stroke:var(--az);stroke-width:1.4}
+svg .node{cursor:pointer}
+svg .node rect.bg{transition:filter .15s}
+svg .node:hover rect.bg{filter:drop-shadow(0 3px 7px rgba(0,60,120,.26))}
+svg .n-label{font-size:12.5px;font-weight:700;fill:#1f2328}
+svg .n-sub{font-size:10px;fill:#5b6672}
+
+/* ---------- misc ---------- */
+.pill-row{display:flex;gap:7px;flex-wrap:wrap;margin:10px 0 0}
+.tag{font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:14px;background:#eef3fb;color:var(--az-deep);border:1px solid #d3e3f5}
+.tag.g{background:#dff0d8;color:#0a5c0a;border-color:#bfe0bf}
+.tag.p{background:#f1ecfa;color:#5c3f91;border-color:#ddd0f2}
+.tag.a{background:#fff4ce;color:#7a5200;border-color:#f0e0a8}
+.footer{background:#0b2545;color:#9fb8d0;padding:38px 0}
+.footer a{color:var(--az-cyan);text-decoration:none}
+.footer a:hover{text-decoration:underline}
+.footer h4{color:#fff;font-size:14px;margin:0 0 10px}
+.footer p{font-size:13px;line-height:1.65;margin:0 0 8px}
+.footer .cols{display:grid;grid-template-columns:2fr 1fr 1fr;gap:28px}
+
+@media (max-width:1000px){
+  .diagram-shell{grid-template-columns:1fr}
+  .diagram-info{position:static}
+}
+@media (max-width:768px){
+  .grid-2,.grid-3,.grid-4{grid-template-columns:1fr}
+  .hero h1{font-size:29px}
+  .hero{padding:48px 0 40px}
+  .section-title{font-size:24px}
+  .footer .cols{grid-template-columns:1fr}
+  .hero-stats{gap:24px}
+}
+</style>
+</head>
+<body>
+
+<nav class="top-nav"><div class="container-xl px-3"><div class="nav-inner">
+  <span class="nav-logo">Azure Hosting<span class="dot">.</span>Guide</span>
+  <a href="#overview">Overview</a>
+  <a href="#compare">Compare</a>
+  <a href="#services">Services</a>
+  <a href="#decide">Decision Guide</a>
+</div></div></nav>
+
+<section class="hero"><div class="container-xl px-3">
+  <p class="eyebrow">Platform Selection Guide</p>
+  <h1>Choosing the right <span class="highlight">Azure application hosting</span> platform</h1>
+  <p class="subtitle">From fully managed web apps to Kubernetes and AI agents &mdash; a practical comparison of Azure's compute and hosting options, with the resiliency patterns that keep each one running when things go wrong.</p>
+  <div class="badge-row">
+    <span class="pill">App Service</span>
+    <span class="pill">Functions</span>
+    <span class="pill">Logic Apps</span>
+    <span class="pill">Static Web Apps</span>
+    <span class="pill">Container Apps</span>
+    <span class="pill">AKS</span>
+    <span class="pill">Container Instances</span>
+    <span class="pill">Spring Apps</span>
+    <span class="pill">Red Hat OpenShift</span>
+    <span class="pill">Foundry Agents</span>
+  </div>
+  <div class="hero-stats">
+    <div><span class="n">10</span><span class="l">Hosting options</span></div>
+    <div><span class="n">4</span><span class="l">Comparison matrices</span></div>
+    <div><span class="n">10</span><span class="l">Resiliency architectures</span></div>
+    <div><span class="n">99.95%</span><span class="l">Typical platform SLA</span></div>
+  </div>
+</div></section>
+<!-- ══════════ OVERVIEW ══════════ -->
+<section id="overview" class="section"><div class="container-xl px-3">
+  <h2 class="section-title">The abstraction spectrum</h2>
+  <p class="section-lead">Every Azure hosting option trades <strong>control</strong> against <strong>convenience</strong>. The further right you move, the more infrastructure you own &mdash; and the more operational capability your team needs to sustain it. Start as far left as your requirements allow.</p>
+
+  <div class="grid-4">
+    <div class="feature-card" style="border-top:4px solid var(--az-green)">
+      <h3>Fully managed apps</h3>
+      <p>You deploy code. Azure owns the OS, runtime, patching, load balancing and scale.</p>
+      <div class="pill-row">
+        <span class="tag g">App Service</span><span class="tag g">Static Web Apps</span><span class="tag g">Spring Apps</span>
+      </div>
+    </div>
+    <div class="feature-card" style="border-top:4px solid var(--az)">
+      <h3>Serverless &amp; workflow</h3>
+      <p>You deploy functions or workflows. Azure owns everything else and bills per execution.</p>
+      <div class="pill-row">
+        <span class="tag">Functions</span><span class="tag">Logic Apps</span><span class="tag">Foundry Agents</span>
+      </div>
+    </div>
+    <div class="feature-card" style="border-top:4px solid var(--az-purple)">
+      <h3>Serverless containers</h3>
+      <p>You deploy container images. Azure owns the cluster, networking fabric and scaling engine.</p>
+      <div class="pill-row">
+        <span class="tag p">Container Apps</span><span class="tag p">Container Instances</span>
+      </div>
+    </div>
+    <div class="feature-card" style="border-top:4px solid var(--az-amber)">
+      <h3>Managed Kubernetes</h3>
+      <p>You own the cluster configuration, node pools, upgrades and platform add-ons.</p>
+      <div class="pill-row">
+        <span class="tag a">AKS</span><span class="tag a">Red Hat OpenShift</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <p><strong>The default recommendation</strong> &mdash; if the workload is an HTTP application and you have no hard Kubernetes requirement, start with <strong>App Service</strong> or <strong>Container Apps</strong>. Move to AKS or OpenShift only when you need cluster-level extensibility, a specific operator ecosystem, or you already run Kubernetes at scale.</p>
+  </div>
+</div></section>
+
+<!-- ══════════ COMPARISON MATRICES ══════════ -->
+<section id="compare" class="section section-alt"><div class="container-xl px-3">
+  <h2 class="section-title">Service comparison</h2>
+  <p class="section-lead">Four matrices covering capability, resiliency, networking and cost. Scroll each table horizontally on smaller screens.</p>
+
+  <h3 class="block-title">1 &middot; Capability &amp; workload fit</h3>
+  <div class="matrix-wrap"><table class="matrix">
+    <thead><tr>
+      <th>Capability</th>
+      <th>App<br>Service</th><th>Azure<br>Functions</th><th>Logic<br>Apps</th><th>Static<br>Web Apps</th><th>Container<br>Apps</th><th>AKS</th><th>Container<br>Instances</th><th>Spring<br>Apps</th><th>Red Hat<br>OpenShift</th><th>Foundry<br>Agents</th>
+    </tr></thead>
+    <tbody>
+      <tr><th>Windows workloads</th><td class="yes">&#10004;</td><td class="yes">&#10004;</td><td class="na">N/A</td><td class="na">N/A</td><td class="no">&mdash;</td><td class="yes">&#10004;<span class="qual">Windows node pools</span></td><td class="yes">&#10004;</td><td class="no">&mdash;</td><td class="no">&mdash;</td><td class="na">N/A</td></tr>
+      <tr><th>Linux workloads</th><td class="yes">&#10004;</td><td class="yes">&#10004;</td><td class="na">N/A</td><td class="na">N/A</td><td class="yes">&#10004;</td><td class="yes">&#10004;</td><td class="yes">&#10004;</td><td class="yes">&#10004;</td><td class="yes">&#10004;</td><td class="na">N/A</td></tr>
+      <tr><th>Single web app or API</th><td class="yes">&#10004;</td><td class="yes">&#10004;</td><td class="no">&mdash;</td><td class="yes">&#10004;</td><td class="yes">&#10004;</td><td class="yes">&#10004;</td><td class="no">&mdash;<span class="qual">no load balancing</span></td><td class="yes">&#10004;</td><td class="yes">&#10004;</td><td class="no">&mdash;</td></tr>
+      <tr><th>Microservices</th><td class="yes">&#10004;<span class="qual">independent apps / APIs</span></td><td class="yes">&#10004;</td><td class="no">&mdash;</td><td class="no">&mdash;</td><td class="yes">&#10004;</td><td class="yes">&#10004;</td><td class="no">&mdash;</td><td class="yes">&#10004;</td><td class="yes">&#10004;</td><td class="no">&mdash;</td></tr>
+      <tr><th>Containers required</th><td class="no">&mdash;<span class="qual">optional</span></td><td class="no">&mdash;<span class="qual">optional</span></td><td class="no">&mdash;</td><td class="no">&mdash;</td><td class="yes">&#10004;</td><td class="yes">&#10004;</td><td class="yes">&#10004;</td><td class="no">&mdash;<span class="qual">optional</span></td><td class="yes">&#10004;</td><td class="no">&mdash;<span class="qual">hosted agents only</span></td></tr>
+      <tr><th>Consumption billing</th><td class="no">&mdash;</td><td class="yes">&#10004;</td><td class="yes">&#10004;</td><td class="yes">&#10004;</td><td class="yes">&#10004;</td><td class="no">&mdash;</td><td class="yes">&#10004;</td><td class="yes">&#10004;<span class="qual">Standard consumption</span></td><td class="no">&mdash;</td><td class="yes">&#10004;</td></tr>
+      <tr><th>Auto-scale</th><td class="yes">&#10004;</td><td class="yes">&#10004;</td><td class="yes">&#10004;</td><td class="yes">&#10004;<span class="qual">edge</span></td><td class="yes">&#10004;</td><td class="yes">&#10004;</td><td class="no">&mdash;<span class="qual">needs orchestrator</span></td><td class="yes">&#10004;</td><td class="yes">&#10004;</td><td class="yes">&#10004;</td></tr>
+      <tr><th>Scale to zero</th><td class="no">&mdash;</td><td class="yes">&#10004;</td><td class="yes">&#10004;<span class="qual">Consumption</span></td><td class="na">N/A</td><td class="yes">&#10004;</td><td class="yes">&#10004;<span class="qual">user node pools</span></td><td class="yes">&#10004;<span class="qual">per-second billing</span></td><td class="yes">&#10004;<span class="qual">consumption plan</span></td><td class="no">&mdash;</td><td class="yes">&#10004;</td></tr>
+      <tr><th>Long-running jobs / batch</th><td class="yes">&#10004;<span class="qual">WebJobs</span></td><td class="yes">&#10004;<span class="qual">Durable Functions</span></td><td class="yes">&#10004;</td><td class="no">&mdash;</td><td class="yes">&#10004;<span class="qual">Jobs</span></td><td class="yes">&#10004;</td><td class="yes">&#10004;</td><td class="yes">&#10004;<span class="qual">Tasks</span></td><td class="yes">&#10004;</td><td class="no">&mdash;</td></tr>
+      <tr><th>Event-driven triggers</th><td class="no">&mdash;</td><td class="yes">&#10004;</td><td class="yes">&#10004;</td><td class="no">&mdash;</td><td class="yes">&#10004;<span class="qual">KEDA</span></td><td class="yes">&#10004;<span class="qual">KEDA</span></td><td class="no">&mdash;</td><td class="no">&mdash;</td><td class="yes">&#10004;</td><td class="yes">&#10004;</td></tr>
+      <tr><th>GPU workloads</th><td class="no">&mdash;</td><td class="no">&mdash;</td><td class="no">&mdash;</td><td class="no">&mdash;</td><td class="yes">&#10004;<span class="qual">serverless GPU</span></td><td class="yes">&#10004;</td><td class="yes">&#10004;</td><td class="no">&mdash;</td><td class="yes">&#10004;</td><td class="na">N/A<span class="qual">model-side</span></td></tr>
+      <tr><th>Java / Spring optimised</th><td class="yes">&#10004;</td><td class="yes">&#10004;</td><td class="no">&mdash;</td><td class="no">&mdash;</td><td class="yes">&#10004;</td><td class="yes">&#10004;</td><td class="no">&mdash;</td><td class="yes">&#10004;<span class="qual">purpose-built</span></td><td class="yes">&#10004;</td><td class="no">&mdash;</td></tr>
+      <tr><th>OpenShift / RHEL tooling</th><td class="no">&mdash;</td><td class="no">&mdash;</td><td class="no">&mdash;</td><td class="no">&mdash;</td><td class="no">&mdash;</td><td class="no">&mdash;</td><td class="no">&mdash;</td><td class="no">&mdash;</td><td class="yes">&#10004;</td><td class="no">&mdash;</td></tr>
+      <tr><th>Full cluster control</th><td class="no">&mdash;</td><td class="no">&mdash;</td><td class="no">&mdash;</td><td class="no">&mdash;</td><td class="no">&mdash;</td><td class="yes">&#10004;</td><td class="no">&mdash;</td><td class="no">&mdash;</td><td class="yes">&#10004;</td><td class="no">&mdash;</td></tr>
+    </tbody>
+  </table></div>
+  <p class="matrix-note"><strong>&#10004;</strong> supported &nbsp;&middot;&nbsp; <strong>&mdash;</strong> not supported or not a good fit &nbsp;&middot;&nbsp; <strong>N/A</strong> not applicable to this abstraction level.</p>
+
+  <h3 class="block-title">2 &middot; Resiliency &amp; availability</h3>
+  <div class="matrix-wrap"><table class="matrix">
+    <thead><tr>
+      <th>Resiliency capability</th>
+      <th>App<br>Service</th><th>Azure<br>Functions</th><th>Logic<br>Apps</th><th>Static<br>Web Apps</th><th>Container<br>Apps</th><th>AKS</th><th>Container<br>Instances</th><th>Spring<br>Apps</th><th>Red Hat<br>OpenShift</th><th>Foundry<br>Agents</th>
+    </tr></thead>
+    <tbody>
+      <tr><th>Availability zone redundancy</th><td class="yes">&#10004;<span class="qual">Premium / Isolated</span></td><td class="yes">&#10004;<span class="qual">Flex &amp; Premium</span></td><td class="yes">&#10004;<span class="qual">Standard</span></td><td class="yes">&#10004;<span class="qual">global edge</span></td><td class="yes">&#10004;<span class="qual">environment level</span></td><td class="yes">&#10004;<span class="qual">node pools</span></td><td class="yes">&#10004;<span class="qual">pinned to one zone</span></td><td class="yes">&#10004;</td><td class="yes">&#10004;</td><td class="yes">&#10004;<span class="qual">platform-managed</span></td></tr>
+      <tr><th>Multi-region active/active</th><td class="yes">&#10004;<span class="qual">+ Front Door</span></td><td class="yes">&#10004;<span class="qual">+ Front Door</span></td><td class="yes">&#10004;<span class="qual">active / passive</span></td><td class="yes">&#10004;<span class="qual">built-in</span></td><td class="yes">&#10004;<span class="qual">+ Front Door</span></td><td class="yes">&#10004;<span class="qual">+ Fleet Manager</span></td><td class="yes">&#10004;<span class="qual">manual</span></td><td class="yes">&#10004;<span class="qual">+ Front Door</span></td><td class="yes">&#10004;<span class="qual">+ Front Door</span></td><td class="yes">&#10004;</td></tr>
+      <tr><th>Built-in health probes</th><td class="yes">&#10004;<span class="qual">health check path</span></td><td class="na">N/A<span class="qual">platform-managed</span></td><td class="na">N/A</td><td class="na">N/A</td><td class="yes">&#10004;<span class="qual">liveness / readiness / startup</span></td><td class="yes">&#10004;</td><td class="no">&mdash;<span class="qual">restart policy only</span></td><td class="yes">&#10004;</td><td class="yes">&#10004;</td><td class="na">N/A</td></tr>
+      <tr><th>Blue-green / canary deploys</th><td class="yes">&#10004;<span class="qual">slots</span></td><td class="yes">&#10004;<span class="qual">slots</span></td><td class="yes">&#10004;<span class="qual">slots (Standard)</span></td><td class="yes">&#10004;<span class="qual">preview envs</span></td><td class="yes">&#10004;<span class="qual">revisions + split</span></td><td class="yes">&#10004;<span class="qual">via controller</span></td><td class="no">&mdash;</td><td class="yes">&#10004;<span class="qual">blue-green</span></td><td class="yes">&#10004;<span class="qual">Argo CD</span></td><td class="yes">&#10004;<span class="qual">versions</span></td></tr>
+      <tr><th>Automatic instance healing</th><td class="yes">&#10004;<span class="qual">auto-heal</span></td><td class="yes">&#10004;</td><td class="yes">&#10004;</td><td class="na">N/A</td><td class="yes">&#10004;</td><td class="yes">&#10004;</td><td class="yes">&#10004;<span class="qual">restart policy</span></td><td class="yes">&#10004;</td><td class="yes">&#10004;</td><td class="yes">&#10004;</td></tr>
+      <tr><th>Built-in retry / replay</th><td class="no">&mdash;</td><td class="yes">&#10004;<span class="qual">bindings + Durable</span></td><td class="yes">&#10004;<span class="qual">per-action policy</span></td><td class="no">&mdash;</td><td class="no">&mdash;<span class="qual">app-level</span></td><td class="no">&mdash;<span class="qual">app-level</span></td><td class="no">&mdash;</td><td class="no">&mdash;</td><td class="no">&mdash;</td><td class="yes">&#10004;<span class="qual">runtime-managed</span></td></tr>
+      <tr><th>Durable state / run history</th><td class="no">&mdash;</td><td class="yes">&#10004;<span class="qual">Durable Functions</span></td><td class="yes">&#10004;<span class="qual">checkpointed runs</span></td><td class="no">&mdash;</td><td class="no">&mdash;</td><td class="no">&mdash;</td><td class="no">&mdash;</td><td class="no">&mdash;</td><td class="no">&mdash;</td><td class="yes">&#10004;<span class="qual">session state</span></td></tr>
+      <tr><th>Published platform SLA</th><td>99.95%</td><td>99.95%</td><td>99.9%</td><td>99.95%</td><td>99.95%</td><td>99.95%<span class="qual">Standard tier</span></td><td>99.9%</td><td>99.95%</td><td>99.95%</td><td class="na">Verify<span class="qual">current terms</span></td></tr>
+    </tbody>
+  </table></div>
+  <p class="matrix-note">SLA figures are indicative; always confirm the current service-level agreement for your tier and region before committing contractually.</p>
+
+  <h3 class="block-title">3 &middot; Networking &amp; security</h3>
+  <div class="matrix-wrap"><table class="matrix">
+    <thead><tr>
+      <th>Networking / security</th>
+      <th>App<br>Service</th><th>Azure<br>Functions</th><th>Logic<br>Apps</th><th>Static<br>Web Apps</th><th>Container<br>Apps</th><th>AKS</th><th>Container<br>Instances</th><th>Spring<br>Apps</th><th>Red Hat<br>OpenShift</th><th>Foundry<br>Agents</th>
+    </tr></thead>
+    <tbody>
+      <tr><th>Built-in HTTPS ingress</th><td class="yes">&#10004;</td><td class="yes">&#10004;</td><td class="yes">&#10004;</td><td class="yes">&#10004;</td><td class="yes">&#10004;<span class="qual">Envoy</span></td><td class="no">&mdash;<span class="qual">deploy a controller</span></td><td class="no">&mdash;<span class="qual">public IP only</span></td><td class="yes">&#10004;</td><td class="yes">&#10004;<span class="qual">OpenShift Router</span></td><td class="yes">&#10004;</td></tr>
+      <tr><th>Custom domain + managed TLS</th><td class="yes">&#10004;</td><td class="yes">&#10004;</td><td class="yes">&#10004;</td><td class="yes">&#10004;</td><td class="yes">&#10004;</td><td class="yes">&#10004;<span class="qual">via ingress</span></td><td class="no">&mdash;</td><td class="yes">&#10004;</td><td class="yes">&#10004;</td><td class="no">&mdash;</td></tr>
+      <tr><th>VNet integration</th><td class="yes">&#10004;</td><td class="yes">&#10004;<span class="qual">Flex / Premium</span></td><td class="yes">&#10004;<span class="qual">Standard</span></td><td class="yes">&#10004;<span class="qual">Standard</span></td><td class="yes">&#10004;</td><td class="yes">&#10004;</td><td class="yes">&#10004;</td><td class="yes">&#10004;</td><td class="yes">&#10004;</td><td class="yes">&#10004;<span class="qual">BYO VNet</span></td></tr>
+      <tr><th>Private endpoint (inbound)</th><td class="yes">&#10004;</td><td class="yes">&#10004;</td><td class="yes">&#10004;<span class="qual">Standard</span></td><td class="yes">&#10004;<span class="qual">Standard</span></td><td class="yes">&#10004;</td><td class="yes">&#10004;<span class="qual">private cluster</span></td><td class="no">&mdash;</td><td class="yes">&#10004;</td><td class="yes">&#10004;</td><td class="yes">&#10004;</td></tr>
+      <tr><th>Fully isolated tenancy</th><td class="yes">&#10004;<span class="qual">ASE v3</span></td><td class="yes">&#10004;<span class="qual">ASE v3</span></td><td class="yes">&#10004;<span class="qual">ASE v3</span></td><td class="no">&mdash;</td><td class="yes">&#10004;<span class="qual">workload profiles</span></td><td class="yes">&#10004;</td><td class="no">&mdash;</td><td class="yes">&#10004;<span class="qual">dedicated plan</span></td><td class="yes">&#10004;</td><td class="yes">&#10004;<span class="qual">session sandbox</span></td></tr>
+      <tr><th>Managed identity</th><td class="yes">&#10004;</td><td class="yes">&#10004;</td><td class="yes">&#10004;</td><td class="yes">&#10004;</td><td class="yes">&#10004;</td><td class="yes">&#10004;<span class="qual">workload identity</span></td><td class="yes">&#10004;</td><td class="yes">&#10004;</td><td class="yes">&#10004;</td><td class="yes">&#10004;<span class="qual">Entra Agent ID</span></td></tr>
+      <tr><th>WAF (Front Door / App Gateway)</th><td class="yes">&#10004;</td><td class="yes">&#10004;</td><td class="yes">&#10004;</td><td class="yes">&#10004;</td><td class="yes">&#10004;</td><td class="yes">&#10004;</td><td class="no">&mdash;</td><td class="yes">&#10004;</td><td class="yes">&#10004;</td><td class="yes">&#10004;<span class="qual">via API Management</span></td></tr>
+      <tr><th>Built-in authentication</th><td class="yes">&#10004;<span class="qual">Easy Auth</span></td><td class="yes">&#10004;<span class="qual">Easy Auth</span></td><td class="yes">&#10004;<span class="qual">keys / Entra</span></td><td class="yes">&#10004;<span class="qual">built-in providers</span></td><td class="yes">&#10004;</td><td class="no">&mdash;</td><td class="no">&mdash;</td><td class="no">&mdash;</td><td class="yes">&#10004;<span class="qual">OAuth</span></td><td class="yes">&#10004;<span class="qual">Entra + RBAC</span></td></tr>
+    </tbody>
+  </table></div>
+
+  <h3 class="block-title">4 &middot; Tiering, cost &amp; operations</h3>
+  <div class="matrix-wrap"><table class="matrix">
+    <thead><tr>
+      <th>Cost &amp; operations</th>
+      <th>App<br>Service</th><th>Azure<br>Functions</th><th>Logic<br>Apps</th><th>Static<br>Web Apps</th><th>Container<br>Apps</th><th>AKS</th><th>Container<br>Instances</th><th>Spring<br>Apps</th><th>Red Hat<br>OpenShift</th><th>Foundry<br>Agents</th>
+    </tr></thead>
+    <tbody>
+      <tr><th>Free tier available</th><td class="yes">&#10004;<span class="qual">F1</span></td><td class="yes">&#10004;<span class="qual">monthly grant</span></td><td class="no">&mdash;</td><td class="yes">&#10004;</td><td class="yes">&#10004;<span class="qual">monthly grant</span></td><td class="yes">&#10004;<span class="qual">Free tier, no SLA</span></td><td class="no">&mdash;</td><td class="no">&mdash;</td><td class="no">&mdash;</td><td class="no">&mdash;</td></tr>
+      <tr><th>Dedicated / reserved tier</th><td class="yes">&#10004;<span class="qual">Premium, Isolated</span></td><td class="yes">&#10004;<span class="qual">Premium, Dedicated</span></td><td class="yes">&#10004;<span class="qual">Standard WS plans</span></td><td class="yes">&#10004;<span class="qual">Standard</span></td><td class="yes">&#10004;<span class="qual">workload profiles</span></td><td class="yes">&#10004;</td><td class="no">&mdash;</td><td class="yes">&#10004;<span class="qual">Standard, Enterprise</span></td><td class="yes">&#10004;</td><td class="yes">&#10004;<span class="qual">provisioned throughput</span></td></tr>
+      <tr><th>Cost when idle</th><td>Full</td><td>None</td><td>None</td><td>Flat<span class="qual">per app</span></td><td>None</td><td>Full<span class="qual">nodes keep running</span></td><td>None</td><td>Varies<span class="qual">by plan</span></td><td>Full</td><td>None</td></tr>
+      <tr><th>Primary billing unit</th><td>Instance-hour</td><td>GB-s +<br>executions</td><td>Per action<br>executed</td><td>App / month<br>+ bandwidth</td><td>vCPU-s +<br>GiB-s</td><td>Node VMs +<br>control plane</td><td>vCPU &amp; GB<br>per second</td><td>vCPU &amp; GB<br>per instance</td><td>Worker VMs<br>+ licence</td><td>Tokens + tools<br>(+ compute)</td></tr>
+      <tr><th>Operational overhead</th><td><span class="lvl lvl-low">Low</span></td><td><span class="lvl lvl-low">Low</span></td><td><span class="lvl lvl-low">Low</span></td><td><span class="lvl lvl-low">Low</span></td><td><span class="lvl lvl-low">Low</span></td><td><span class="lvl lvl-high">High</span></td><td><span class="lvl lvl-low">Low</span></td><td><span class="lvl lvl-med">Medium</span></td><td><span class="lvl lvl-high">High</span></td><td><span class="lvl lvl-low">Low</span></td></tr>
+      <tr><th>Team skillset needed</th><td>App dev</td><td>App dev</td><td>Integration</td><td>Front-end</td><td>Containers</td><td>Kubernetes<br>+ platform</td><td>Containers</td><td>Java /<br>Spring</td><td>OpenShift<br>+ platform</td><td>AI / prompt<br>engineering</td></tr>
+    </tbody>
+  </table></div>
+  <p class="matrix-note">Pricing models change. Validate current rates with the Azure Pricing Calculator before producing a business case.</p>
+</div></section>
+<!-- ══════════ SERVICE DEEP DIVES ══════════ -->
+<section id="services" class="section"><div class="container-xl px-3">
+  <h2 class="section-title">Service deep dives</h2>
+  <p class="section-lead">Select a service to see its tiers, scaling behaviour, resiliency levers and a reference architecture. Hover any component in the diagram to learn why it matters.</p>
+
+  <div class="tabbar" role="tablist">
+    <button class="tabbtn is-active" data-tab="appservice" role="tab">App Service</button>
+    <button class="tabbtn" data-tab="functions" role="tab">Functions</button>
+    <button class="tabbtn" data-tab="logicapps" role="tab">Logic Apps</button>
+    <button class="tabbtn" data-tab="swa" role="tab">Static Web Apps</button>
+    <button class="tabbtn" data-tab="aca" role="tab">Container Apps</button>
+    <button class="tabbtn" data-tab="aks" role="tab">AKS</button>
+    <button class="tabbtn" data-tab="aci" role="tab">Container Instances</button>
+    <button class="tabbtn" data-tab="spring" role="tab">Spring Apps</button>
+    <button class="tabbtn" data-tab="aro" role="tab">Red Hat OpenShift</button>
+    <button class="tabbtn" data-tab="foundry" role="tab">Foundry Agents</button>
+  </div>
+
+  <!-- ───── APP SERVICE ───── -->
+  <div class="panel is-active" id="tab-appservice" role="tabpanel">
+    <div class="svc-head">
+      <div>
+        <span class="svc-eyebrow">Fully managed applications</span>
+        <h3 class="svc-title">Azure App Service</h3>
+      </div>
+      <span class="svc-best">Best for traditional web apps and APIs</span>
+    </div>
+    <p class="svc-lead">A fully managed HTTP platform for web apps, REST APIs and mobile back ends. You deploy code or a container; Azure handles the operating system, runtime patching, load balancing, certificates and scale. It remains the fastest route to production for most line-of-business applications.</p>
+
+    <div class="callout"><p><strong>Choose it when</strong> you have a conventional web application or API, you want zero infrastructure ownership, and you do not need container orchestration primitives. If the app already runs on IIS, Tomcat, Node or .NET, this is usually the lowest-friction destination.</p></div>
+
+    <h4 class="block-title">Plans and tiers</h4>
+    <div class="grid-3">
+      <div class="feature-card">
+        <h3>Shared &amp; Basic</h3>
+        <p><span class="k">Free (F1), Basic (B1&ndash;B3)</span></p>
+        <ul>
+          <li>Development and proof-of-concept use</li>
+          <li>Manual scale only, no deployment slots</li>
+          <li>No zone redundancy &mdash; avoid for production</li>
+        </ul>
+      </div>
+      <div class="feature-card">
+        <h3>Standard &amp; Premium</h3>
+        <p><span class="k">S1&ndash;S3, Premium v3 (P0v3&ndash;P5v3), Premium v4</span></p>
+        <ul>
+          <li>Autoscale, deployment slots, custom domains</li>
+          <li><span class="k">Zone redundancy on Premium</span> with two or more instances</li>
+          <li>Premium v3 adds automatic scaling and better price-performance</li>
+        </ul>
+      </div>
+      <div class="feature-card">
+        <h3>Isolated v2</h3>
+        <p><span class="k">App Service Environment v3 (I1v2&ndash;I6v2)</span></p>
+        <ul>
+          <li>Single-tenant deployment into your own virtual network</li>
+          <li>Highest scale limits and network isolation</li>
+          <li>For regulated workloads with strict egress control</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout callout-blue">
+      <p><strong>Managed Instance on App Service</strong> &mdash; a plan-scoped option for legacy or infrastructure-dependent Windows web apps that need more operating-system customization without giving up managed patching, scaling, diagnostics and identity.</p>
+      <ul>
+        <li>Supports PowerShell install scripts for COM components, MSI packages, registry settings, IIS configuration, Windows services, GAC assemblies and selected Windows features.</li>
+        <li>Offers dedicated compute, optional plan-level virtual network integration, Key Vault-backed registry values, Azure Files or UNC mounts, and just-in-time RDP through Azure Bastion for diagnostics.</li>
+        <li>Use it for &ldquo;lift and improve&rdquo; migrations that cannot yet move to standard App Service. It is Windows web apps only, available in select regions on Pv4 and Pmv4 plans, and does not support Linux, containers, WebJobs or App Service Environment.</li>
+      </ul>
+      <p><a href="https://learn.microsoft.com/en-us/azure/app-service/overview-managed-instance" target="_blank" rel="noopener">Read the Managed Instance overview on Microsoft Learn &rarr;</a></p>
+    </div>
+
+    <h4 class="block-title">Resiliency levers</h4>
+    <div class="grid-3">
+      <div class="feature-card" style="border-left:4px solid var(--az)">
+        <h3>Zone redundancy</h3>
+        <p>On Premium and Isolated v2 plans, instances are spread across physically separate availability zones in the region. A datacentre-level failure removes a fraction of capacity rather than the whole app.</p>
+      </div>
+      <div class="feature-card" style="border-left:4px solid var(--az-green)">
+        <h3>Health check &amp; auto-heal</h3>
+        <p>Configure a health check path and the platform removes failing instances from rotation and replaces them. Auto-heal rules can recycle a worker on memory thresholds, slow requests or specific status codes.</p>
+      </div>
+      <div class="feature-card" style="border-left:4px solid var(--az-purple)">
+        <h3>Deployment slots</h3>
+        <p>Deploy to a staging slot, warm it up, then swap. The swap is an instance-level routing change, so rollback is immediate and failed deployments never reach customers cold.</p>
+      </div>
+    </div>
+
+    <h4 class="block-title">Reference architecture</h4>
+    <div class="diagram-shell">
+      <div class="diagram-box" data-diagram="appservice"></div>
+      <aside class="diagram-info is-idle">
+        <span class="di-kind">Component detail</span>
+        <p class="di-title">Hover a component</p>
+        <p class="di-body">Move your pointer over any box in the diagram to see why that component matters for resiliency.</p>
+      </aside>
+    </div>
+    <div class="legend">
+      <span><i class="lg-client"></i>Client</span><span><i class="lg-edge"></i>Edge / network</span><span><i class="lg-compute"></i>Compute</span><span><i class="lg-data"></i>Data</span><span><i class="lg-ops"></i>Operations</span>
+    </div>
+
+    <div class="callout callout-warn"><p><strong>Cost &amp; sizing note</strong> &mdash; App Service bills per instance-hour whether or not traffic arrives, so idle environments cost full price. Consolidate non-production apps onto a shared plan, and size on memory and connection count rather than CPU alone.</p></div>
+  </div>
+
+  <!-- ───── FUNCTIONS ───── -->
+  <div class="panel" id="tab-functions" role="tabpanel">
+    <div class="svc-head">
+      <div>
+        <span class="svc-eyebrow">Serverless compute</span>
+        <h3 class="svc-title">Azure Functions</h3>
+      </div>
+      <span class="svc-best">Best for event-driven and bursty workloads</span>
+    </div>
+    <p class="svc-lead">Event-driven compute that runs a block of code in response to a trigger &mdash; an HTTP request, queue message, blob upload, timer or event stream. The platform owns scaling entirely, and you pay for execution time rather than reserved capacity.</p>
+
+    <div class="callout"><p><strong>Choose it when</strong> work arrives as discrete events, traffic is spiky or unpredictable, and each unit of work completes in a bounded time. Functions is also the cheapest way to run infrequent background processing because idle cost is effectively zero.</p></div>
+
+    <h4 class="block-title">Hosting plans</h4>
+    <div class="grid-3">
+      <div class="feature-card">
+        <h3>Consumption</h3>
+        <ul>
+          <li>Scales to zero; billed on GB-seconds and executions</li>
+          <li>Cold starts on first request after idle</li>
+          <li>No virtual network integration</li>
+        </ul>
+      </div>
+      <div class="feature-card" style="border-top:4px solid var(--az)">
+        <h3>Flex Consumption</h3>
+        <ul>
+          <li>Scale to zero <span class="k">plus</span> always-ready instances to remove cold start</li>
+          <li>Virtual network integration and zone redundancy</li>
+          <li>Per-instance concurrency control</li>
+          <li>The default choice for new serverless workloads</li>
+        </ul>
+      </div>
+      <div class="feature-card">
+        <h3>Premium &amp; Dedicated</h3>
+        <ul>
+          <li>Premium (EP1&ndash;EP3): pre-warmed instances, no cold start, VNet</li>
+          <li>Dedicated: runs on an existing App Service plan</li>
+          <li>Container Apps hosting for container-packaged functions</li>
+        </ul>
+      </div>
+    </div>
+
+    <h4 class="block-title">Resiliency levers</h4>
+    <div class="grid-3">
+      <div class="feature-card" style="border-left:4px solid var(--az)">
+        <h3>Queue-based buffering</h3>
+        <p>Trigger from Service Bus or Event Hubs rather than direct HTTP where possible. The broker absorbs bursts, preserves messages during downstream outages, and dead-letters poison messages instead of losing them.</p>
+      </div>
+      <div class="feature-card" style="border-left:4px solid var(--az-green)">
+        <h3>Retry policies &amp; idempotency</h3>
+        <p>Trigger bindings support configurable retry with exponential back-off. Because retries mean at-least-once delivery, handlers must be idempotent &mdash; key writes on a message identifier.</p>
+      </div>
+      <div class="feature-card" style="border-left:4px solid var(--az-purple)">
+        <h3>Durable Functions</h3>
+        <p>For multi-step processes, Durable Functions checkpoints orchestration state. If an instance fails mid-flow, execution resumes from the last checkpoint rather than restarting the whole workflow.</p>
+      </div>
+    </div>
+
+    <h4 class="block-title">Reference architecture</h4>
+    <div class="diagram-shell">
+      <div class="diagram-box" data-diagram="functions"></div>
+      <aside class="diagram-info is-idle">
+        <span class="di-kind">Component detail</span>
+        <p class="di-title">Hover a component</p>
+        <p class="di-body">Move your pointer over any box in the diagram to see why that component matters for resiliency.</p>
+      </aside>
+    </div>
+    <div class="legend">
+      <span><i class="lg-client"></i>Client</span><span><i class="lg-edge"></i>Edge / network</span><span><i class="lg-compute"></i>Compute</span><span><i class="lg-data"></i>Data</span><span><i class="lg-ops"></i>Operations</span>
+    </div>
+
+    <div class="callout callout-warn"><p><strong>Cost &amp; sizing note</strong> &mdash; consumption plans are cheap at low volume but can exceed dedicated pricing under sustained high throughput. Model the crossover point, and watch for runaway scale caused by a poison message loop &mdash; always set a maximum scale-out limit.</p></div>
+  </div>
+
+  <!-- ───── LOGIC APPS ───── -->
+  <div class="panel" id="tab-logicapps" role="tabpanel">
+    <div class="svc-head">
+      <div>
+        <span class="svc-eyebrow">Integration &amp; workflow</span>
+        <h3 class="svc-title">Azure Logic Apps</h3>
+      </div>
+      <span class="svc-best">Best for system integration and business process automation</span>
+    </div>
+    <p class="svc-lead">A low-code workflow engine for connecting systems. Rather than writing integration code, you compose a workflow from triggers and actions drawn from over a thousand connectors &mdash; SAP, Salesforce, SQL, Dataverse, SharePoint, Service Bus and more &mdash; with retry, error handling and run history built into the platform.</p>
+
+    <div class="callout"><p><strong>Choose it when</strong> the problem is moving and transforming data between systems, orchestrating approvals, or implementing B2B exchanges. If most of your code would be API plumbing and retry logic, a workflow engine will be cheaper to build and far cheaper to operate.</p></div>
+
+    <h4 class="block-title">Hosting models</h4>
+    <div class="grid-2">
+      <div class="feature-card">
+        <h3>Consumption (multi-tenant)</h3>
+        <ul>
+          <li>Pay per action executed &mdash; no idle cost</li>
+          <li>Shared multi-tenant runtime; managed connectors only</li>
+          <li>No virtual network integration</li>
+          <li>Good for low-volume, internet-facing integrations</li>
+        </ul>
+      </div>
+      <div class="feature-card" style="border-top:4px solid var(--az)">
+        <h3>Standard (single-tenant)</h3>
+        <ul>
+          <li>Runs on the Azure Functions runtime with WS1&ndash;WS3 workload plans</li>
+          <li><span class="k">Stateful and stateless</span> workflows in the same app</li>
+          <li>Built-in connectors execute in-process &mdash; faster and no per-action connector charge</li>
+          <li>Virtual network integration, private endpoints, App Service Environment, and hybrid deployment on Kubernetes</li>
+        </ul>
+      </div>
+    </div>
+
+    <h4 class="block-title">Resiliency levers</h4>
+    <div class="grid-3">
+      <div class="feature-card" style="border-left:4px solid var(--az)">
+        <h3>Per-action retry policies</h3>
+        <p>Every action has an independent retry policy &mdash; fixed interval, exponential back-off or none. Transient downstream failures are absorbed without any custom code or redeployment.</p>
+      </div>
+      <div class="feature-card" style="border-left:4px solid var(--az-green)">
+        <h3>Scopes and run-after</h3>
+        <p>Group actions into scopes and configure <span class="k">run-after</span> conditions to build try / catch / compensate patterns, so a partial failure triggers cleanup rather than leaving the process half-complete.</p>
+      </div>
+      <div class="feature-card" style="border-left:4px solid var(--az-purple)">
+        <h3>Checkpointed run history</h3>
+        <p>Stateful workflows persist the output of every action. Runs survive host restarts, and you can inspect or resubmit any historical run &mdash; invaluable when reconciling a failed overnight batch.</p>
+      </div>
+    </div>
+
+    <h4 class="block-title">Reference architecture</h4>
+    <div class="diagram-shell">
+      <div class="diagram-box" data-diagram="logicapps"></div>
+      <aside class="diagram-info is-idle">
+        <span class="di-kind">Component detail</span>
+        <p class="di-title">Hover a component</p>
+        <p class="di-body">Move your pointer over any box in the diagram to see why that component matters for resiliency.</p>
+      </aside>
+    </div>
+    <div class="legend">
+      <span><i class="lg-client"></i>Client</span><span><i class="lg-edge"></i>Edge / network</span><span><i class="lg-compute"></i>Compute</span><span><i class="lg-data"></i>Data</span><span><i class="lg-ops"></i>Operations</span>
+    </div>
+
+    <div class="callout callout-warn"><p><strong>Cost &amp; sizing note</strong> &mdash; Consumption bills every action, so a loop over ten thousand records is ten thousand billable actions. High-volume or chatty workflows are usually dramatically cheaper on a Standard workload plan, where built-in connector actions carry no per-execution connector charge.</p></div>
+  </div>
+  <!-- ───── STATIC WEB APPS ───── -->
+  <div class="panel" id="tab-swa" role="tabpanel">
+    <div class="svc-head">
+      <div>
+        <span class="svc-eyebrow">Globally distributed web front ends</span>
+        <h3 class="svc-title">Azure Static Web Apps</h3>
+      </div>
+      <span class="svc-best">Best for modern front ends and content sites</span>
+    </div>
+    <p class="svc-lead">A managed hosting service for static HTML and JavaScript front ends, with globally distributed content, integrated authentication, API back ends and automatic preview environments for pull requests. It is purpose-built for frameworks such as React, Angular, Vue, Svelte, Next.js and Blazor WebAssembly.</p>
+
+    <div class="callout"><p><strong>Choose it when</strong> the browser renders the user experience and the server-side surface is a small API. It removes web-server management entirely while giving development teams a branch-based delivery workflow out of the box.</p></div>
+
+    <h4 class="block-title">Plans and delivery model</h4>
+    <div class="grid-3">
+      <div class="feature-card">
+        <h3>Free</h3>
+        <ul>
+          <li>Personal projects, proofs of concept and development</li>
+          <li>Global static content distribution and managed TLS</li>
+          <li>Limited bandwidth, storage and custom-domain capacity</li>
+        </ul>
+      </div>
+      <div class="feature-card" style="border-top:4px solid var(--az)">
+        <h3>Standard</h3>
+        <ul>
+          <li>Production SLA, private endpoints and enterprise authentication</li>
+          <li>Managed Functions API or a linked existing API</li>
+          <li>Custom roles, larger quotas and multiple environments</li>
+        </ul>
+      </div>
+      <div class="feature-card">
+        <h3>Pull-request environments</h3>
+        <ul>
+          <li>Every pull request gets an isolated preview URL</li>
+          <li>Front end and API are deployed together from GitHub or Azure DevOps</li>
+          <li>Environment is removed automatically when the branch closes</li>
+        </ul>
+      </div>
+    </div>
+
+    <h4 class="block-title">Resiliency levers</h4>
+    <div class="grid-3">
+      <div class="feature-card" style="border-left:4px solid var(--az)">
+        <h3>Global edge distribution</h3>
+        <p>Static assets are served from geographically distributed edge locations. Users continue to receive the front end even if one regional point of presence is unavailable.</p>
+      </div>
+      <div class="feature-card" style="border-left:4px solid var(--az-green)">
+        <h3>Decouple the API</h3>
+        <p>Keep the browser shell independently available from the dynamic API. Cache reference data where appropriate and design graceful error states so an API incident does not become a blank page.</p>
+      </div>
+      <div class="feature-card" style="border-left:4px solid var(--az-purple)">
+        <h3>Preview before promotion</h3>
+        <p>Branch environments let teams validate routing, authentication and API compatibility against production-like hosting before merging, reducing deployment-caused outages.</p>
+      </div>
+    </div>
+
+    <h4 class="block-title">Reference architecture</h4>
+    <div class="diagram-shell">
+      <div class="diagram-box" data-diagram="swa"></div>
+      <aside class="diagram-info is-idle">
+        <span class="di-kind">Component detail</span>
+        <p class="di-title">Hover a component</p>
+        <p class="di-body">Move your pointer over any box in the diagram to see why that component matters for resiliency.</p>
+      </aside>
+    </div>
+    <div class="legend">
+      <span><i class="lg-client"></i>Client</span><span><i class="lg-edge"></i>Edge / network</span><span><i class="lg-compute"></i>Compute</span><span><i class="lg-data"></i>Data</span><span><i class="lg-ops"></i>Operations</span>
+    </div>
+
+    <div class="callout callout-warn"><p><strong>Cost &amp; sizing note</strong> &mdash; the service is priced per app rather than per server. Bandwidth, linked APIs and enterprise features drive the bill, so it is often substantially cheaper than keeping a general-purpose web host online for a front-end-only workload.</p></div>
+  </div>
+
+  <!-- ───── CONTAINER APPS ───── -->
+  <div class="panel" id="tab-aca" role="tabpanel">
+    <div class="svc-head">
+      <div>
+        <span class="svc-eyebrow">Serverless containers</span>
+        <h3 class="svc-title">Azure Container Apps</h3>
+      </div>
+      <span class="svc-best">Best for containerised APIs and microservices without cluster operations</span>
+    </div>
+    <p class="svc-lead">A serverless container platform built on Kubernetes, KEDA, Envoy and optional Dapr &mdash; without exposing the Kubernetes cluster. You deploy a container image and define ingress, scale rules and revision traffic; Azure operates the control plane, nodes and platform upgrades.</p>
+
+    <div class="callout"><p><strong>Choose it when</strong> applications already ship as containers, need event-driven scale or microservice traffic splitting, but the team does not need Kubernetes APIs, custom operators or control over node pools. It provides most application-platform capabilities with a fraction of AKS operations.</p></div>
+
+    <h4 class="block-title">Workload models</h4>
+    <div class="grid-3">
+      <div class="feature-card" style="border-top:4px solid var(--az)">
+        <h3>Consumption</h3>
+        <ul>
+          <li>Per-second vCPU and memory billing with a monthly grant</li>
+          <li>Scales from zero to many replicas using HTTP or KEDA rules</li>
+          <li>Ideal for bursty APIs, workers and event processors</li>
+        </ul>
+      </div>
+      <div class="feature-card">
+        <h3>Dedicated workload profiles</h3>
+        <ul>
+          <li>Reserved compute for predictable performance and isolation</li>
+          <li>Multiple profile sizes in one managed environment</li>
+          <li>Supports network-heavy and memory-heavy workloads</li>
+        </ul>
+      </div>
+      <div class="feature-card">
+        <h3>Jobs &amp; GPU</h3>
+        <ul>
+          <li>Manual, scheduled or event-triggered finite jobs</li>
+          <li>Serverless GPU profiles for inference workloads where available</li>
+          <li>Use jobs instead of holding an API replica for background work</li>
+        </ul>
+      </div>
+    </div>
+
+    <h4 class="block-title">Resiliency levers</h4>
+    <div class="grid-3">
+      <div class="feature-card" style="border-left:4px solid var(--az)">
+        <h3>Zone-redundant environment</h3>
+        <p>Enable zone redundancy when the environment is created, then run at least three replicas for critical services. The platform distributes infrastructure and application replicas across availability zones.</p>
+      </div>
+      <div class="feature-card" style="border-left:4px solid var(--az-green)">
+        <h3>Health probes and KEDA</h3>
+        <p>Startup, readiness and liveness probes keep unhealthy replicas out of rotation. KEDA can scale on queue depth, event lag or a custom metric instead of waiting for CPU pressure.</p>
+      </div>
+      <div class="feature-card" style="border-left:4px solid var(--az-purple)">
+        <h3>Immutable revisions</h3>
+        <p>Every application version becomes an immutable revision. Split traffic between old and new revisions for canary validation, then shift or roll back instantly without rebuilding.</p>
+      </div>
+    </div>
+
+    <h4 class="block-title">Reference architecture</h4>
+    <div class="diagram-shell">
+      <div class="diagram-box" data-diagram="aca"></div>
+      <aside class="diagram-info is-idle">
+        <span class="di-kind">Component detail</span>
+        <p class="di-title">Hover a component</p>
+        <p class="di-body">Move your pointer over any box in the diagram to see why that component matters for resiliency.</p>
+      </aside>
+    </div>
+    <div class="legend">
+      <span><i class="lg-client"></i>Client</span><span><i class="lg-edge"></i>Edge / network</span><span><i class="lg-compute"></i>Compute</span><span><i class="lg-data"></i>Data</span><span><i class="lg-ops"></i>Operations</span>
+    </div>
+
+    <div class="callout callout-warn"><p><strong>Cost &amp; sizing note</strong> &mdash; scale-to-zero makes Consumption economical for intermittent traffic, but sustained workloads can be cheaper on dedicated profiles. Set replica ceilings on every rule and tune per-replica concurrency so a downstream outage cannot trigger unbounded scale.</p></div>
+  </div>
+
+  <!-- ───── AKS ───── -->
+  <div class="panel" id="tab-aks" role="tabpanel">
+    <div class="svc-head">
+      <div>
+        <span class="svc-eyebrow">Managed Kubernetes</span>
+        <h3 class="svc-title">Azure Kubernetes Service</h3>
+      </div>
+      <span class="svc-best">Best for complex platforms that require Kubernetes control</span>
+    </div>
+    <p class="svc-lead">Managed Kubernetes with an Azure-operated control plane and customer-operated node pools. AKS exposes the Kubernetes API and ecosystem: custom resource definitions, operators, service meshes, policy engines, specialised networking and GPU node pools. That flexibility brings the highest operational responsibility in this guide.</p>
+
+    <div class="callout"><p><strong>Choose it when</strong> Kubernetes itself is a requirement: you need custom operators, privileged workloads, specialised networking, a mature internal platform, portability across clusters, or enough services to justify a common orchestration layer. Do not choose it solely because an application is containerised.</p></div>
+
+    <h4 class="block-title">Cluster options</h4>
+    <div class="grid-3">
+      <div class="feature-card">
+        <h3>Free tier</h3>
+        <ul>
+          <li>No control-plane charge and no financially backed SLA</li>
+          <li>Development, test and learning clusters</li>
+          <li>You still pay for every node and attached service</li>
+        </ul>
+      </div>
+      <div class="feature-card" style="border-top:4px solid var(--az)">
+        <h3>Standard tier</h3>
+        <ul>
+          <li>Production control-plane SLA and higher scale limits</li>
+          <li>99.95% API-server SLA when availability zones are used</li>
+          <li>Choose <span class="k">Automatic</span> for opinionated defaults or <span class="k">Standard</span> for full configuration</li>
+        </ul>
+      </div>
+      <div class="feature-card">
+        <h3>Premium tier</h3>
+        <ul>
+          <li>Long-term support for selected Kubernetes versions</li>
+          <li>Extended support window for regulated change processes</li>
+          <li>Node VMs, storage, networking and add-ons remain separate costs</li>
+        </ul>
+      </div>
+    </div>
+
+    <h4 class="block-title">Resiliency levers</h4>
+    <div class="grid-3">
+      <div class="feature-card" style="border-left:4px solid var(--az)">
+        <h3>Zone-aware node pools</h3>
+        <p>Spread system and user node pools across three availability zones, then use topology-spread constraints and pod anti-affinity so replicas do not collapse back onto one node or zone.</p>
+      </div>
+      <div class="feature-card" style="border-left:4px solid var(--az-green)">
+        <h3>Pod disruption budgets</h3>
+        <p>PDBs preserve a minimum number of replicas during voluntary disruptions such as node upgrades. Combine them with readiness probes and surge capacity to upgrade without taking the service offline.</p>
+      </div>
+      <div class="feature-card" style="border-left:4px solid var(--az-purple)">
+        <h3>Layered autoscaling</h3>
+        <p>HPA or KEDA scales pods, while Cluster Autoscaler or Node Autoprovisioning adds nodes. Both layers need tested limits; otherwise a constrained node pool can leave newly requested pods pending.</p>
+      </div>
+    </div>
+
+    <h4 class="block-title">Reference architecture</h4>
+    <div class="diagram-shell">
+      <div class="diagram-box" data-diagram="aks"></div>
+      <aside class="diagram-info is-idle">
+        <span class="di-kind">Component detail</span>
+        <p class="di-title">Hover a component</p>
+        <p class="di-body">Move your pointer over any box in the diagram to see why that component matters for resiliency.</p>
+      </aside>
+    </div>
+    <div class="legend">
+      <span><i class="lg-client"></i>Client</span><span><i class="lg-edge"></i>Edge / network</span><span><i class="lg-compute"></i>Compute</span><span><i class="lg-data"></i>Data</span><span><i class="lg-ops"></i>Operations</span>
+    </div>
+
+    <div class="callout callout-danger"><p><strong>Operational warning</strong> &mdash; the managed control plane does not make the application platform managed. Your team still owns Kubernetes version upgrades, node-image upgrades, ingress, DNS, certificate automation, policy, observability, capacity, pod security and incident response. Budget for a platform engineering capability, not just the VM bill.</p></div>
+  </div>
+  <!-- ───── AZURE CONTAINER INSTANCES ───── -->
+  <div class="panel" id="tab-aci" role="tabpanel">
+    <div class="svc-head">
+      <div>
+        <span class="svc-eyebrow">On-demand container compute</span>
+        <h3 class="svc-title">Azure Container Instances</h3>
+      </div>
+      <span class="svc-best">Best for isolated tasks and short-lived container groups</span>
+    </div>
+    <p class="svc-lead">The fastest way to run a container in Azure without creating a server or cluster. A container group receives CPU, memory, networking and optional persistent storage, starts in seconds, and is billed per second until it stops. ACI is a compute primitive rather than a complete application platform.</p>
+
+    <div class="callout"><p><strong>Choose it when</strong> one or more tightly coupled containers need to run as a finite task, build agent, data-processing step or emergency burst worker. Use an external orchestrator such as Logic Apps, Functions or Azure Batch when work must be retried, scheduled or scaled.</p></div>
+
+    <h4 class="block-title">Execution options</h4>
+    <div class="grid-3">
+      <div class="feature-card">
+        <h3>Container groups</h3>
+        <ul>
+          <li>One or more co-scheduled containers sharing IP, storage and lifecycle</li>
+          <li>Linux and Windows container support</li>
+          <li>Public IP or virtual-network injection</li>
+        </ul>
+      </div>
+      <div class="feature-card">
+        <h3>Restart policies</h3>
+        <ul>
+          <li><span class="k">Always</span> for service-like processes</li>
+          <li><span class="k">OnFailure</span> for retriable jobs</li>
+          <li><span class="k">Never</span> for one-shot tasks whose exit code is inspected externally</li>
+        </ul>
+      </div>
+      <div class="feature-card">
+        <h3>Specialised execution</h3>
+        <ul>
+          <li>Confidential containers protected by AMD SEV-SNP</li>
+          <li>Standby pools reduce startup latency for repeated workloads</li>
+          <li>AKS virtual nodes can burst pods into ACI</li>
+        </ul>
+      </div>
+    </div>
+
+    <h4 class="block-title">Resiliency levers</h4>
+    <div class="grid-3">
+      <div class="feature-card" style="border-left:4px solid var(--az)">
+        <h3>External orchestration</h3>
+        <p>ACI does not provide application autoscaling, rolling deployments or service-level load balancing. Place a durable orchestrator in front to create, monitor, retry and clean up each container group.</p>
+      </div>
+      <div class="feature-card" style="border-left:4px solid var(--az-green)">
+        <h3>Explicit zone placement</h3>
+        <p>A container group can be pinned to an availability zone, but it does not span zones. For higher availability, launch independent groups in multiple zones and route or partition work externally.</p>
+      </div>
+      <div class="feature-card" style="border-left:4px solid var(--az-purple)">
+        <h3>Durable input and output</h3>
+        <p>Keep work items in Service Bus or Queue Storage and write results to durable storage. A failed group can then be replaced without losing its input or relying on ephemeral container files.</p>
+      </div>
+    </div>
+
+    <h4 class="block-title">Reference architecture</h4>
+    <div class="diagram-shell">
+      <div class="diagram-box" data-diagram="aci"></div>
+      <aside class="diagram-info is-idle">
+        <span class="di-kind">Component detail</span>
+        <p class="di-title">Hover a component</p>
+        <p class="di-body">Move your pointer over any box in the diagram to see why that component matters for resiliency.</p>
+      </aside>
+    </div>
+    <div class="legend">
+      <span><i class="lg-client"></i>Client</span><span><i class="lg-edge"></i>Edge / network</span><span><i class="lg-compute"></i>Compute</span><span><i class="lg-data"></i>Data</span><span><i class="lg-ops"></i>Operations</span>
+    </div>
+
+    <div class="callout callout-warn"><p><strong>Cost &amp; sizing note</strong> &mdash; billing stops with the container group, which makes ACI attractive for short jobs. For continuously running services, Container Apps or App Service usually provides better resiliency features and a clearer operational model at comparable cost.</p></div>
+  </div>
+
+  <!-- ───── AZURE SPRING APPS ───── -->
+  <div class="panel" id="tab-spring" role="tabpanel">
+    <div class="svc-head">
+      <div>
+        <span class="svc-eyebrow">Managed Spring application platform</span>
+        <h3 class="svc-title">Azure Spring Apps</h3>
+      </div>
+      <span class="svc-best">Best for enterprise Spring Boot portfolios</span>
+    </div>
+    <p class="svc-lead">A managed application platform designed for Spring Boot and Spring Cloud workloads. Azure operates the runtime, service discovery, configuration, routing, certificates, patching and application instances so Java teams can focus on services rather than building a platform around them.</p>
+
+    <div class="callout"><p><strong>Choose it when</strong> an organisation has a meaningful Spring portfolio and wants consistent discovery, configuration, blue-green deployment and observability without operating Kubernetes. Confirm current regional availability, tier options and lifecycle guidance in Microsoft Learn before making a long-term platform decision.</p></div>
+
+    <h4 class="block-title">Plans and capabilities</h4>
+    <div class="grid-3">
+      <div class="feature-card">
+        <h3>Basic &amp; Standard</h3>
+        <ul>
+          <li>Managed Spring runtime for development and production workloads</li>
+          <li>Autoscale, service discovery, configuration and diagnostics</li>
+          <li>Standard adds production scale and networking features</li>
+        </ul>
+      </div>
+      <div class="feature-card" style="border-top:4px solid var(--az)">
+        <h3>Enterprise</h3>
+        <ul>
+          <li>Commercial VMware Tanzu components and support</li>
+          <li>Application Configuration Service and Service Registry</li>
+          <li>Spring Cloud Gateway, API Portal, Application Live View and Accelerator</li>
+        </ul>
+      </div>
+      <div class="feature-card">
+        <h3>Consumption &amp; dedicated</h3>
+        <ul>
+          <li>Standard consumption and dedicated plan options</li>
+          <li>Linux-based Java and Spring optimisation</li>
+          <li>Enterprise also supports .NET Steeltoe applications</li>
+        </ul>
+      </div>
+    </div>
+
+    <h4 class="block-title">Resiliency levers</h4>
+    <div class="grid-3">
+      <div class="feature-card" style="border-left:4px solid var(--az)">
+        <h3>Zone redundancy</h3>
+        <p>Where supported, zone-redundant deployment spreads platform infrastructure and application instances across availability zones. Run multiple application instances so a zone loss leaves serving capacity.</p>
+      </div>
+      <div class="feature-card" style="border-left:4px solid var(--az-green)">
+        <h3>Managed discovery and config</h3>
+        <p>Centralised service registration and configuration reduce hard-coded dependencies. Services can discover healthy peers dynamically, while configuration changes are governed independently from application binaries.</p>
+      </div>
+      <div class="feature-card" style="border-left:4px solid var(--az-purple)">
+        <h3>Blue-green deployment</h3>
+        <p>Deploy a new version beside the current version, validate it, then switch production traffic. The old deployment remains available for rapid rollback if a regression appears.</p>
+      </div>
+    </div>
+
+    <h4 class="block-title">Reference architecture</h4>
+    <div class="diagram-shell">
+      <div class="diagram-box" data-diagram="spring"></div>
+      <aside class="diagram-info is-idle">
+        <span class="di-kind">Component detail</span>
+        <p class="di-title">Hover a component</p>
+        <p class="di-body">Move your pointer over any box in the diagram to see why that component matters for resiliency.</p>
+      </aside>
+    </div>
+    <div class="legend">
+      <span><i class="lg-client"></i>Client</span><span><i class="lg-edge"></i>Edge / network</span><span><i class="lg-compute"></i>Compute</span><span><i class="lg-data"></i>Data</span><span><i class="lg-ops"></i>Operations</span>
+    </div>
+
+    <div class="callout callout-warn"><p><strong>Cost &amp; sizing note</strong> &mdash; dedicated plans bill for provisioned application vCPU and memory, while Enterprise also carries a commercial component licence per vCPU. Consolidating many Spring services can justify that platform premium; a single small service is often cheaper on App Service or Container Apps.</p></div>
+  </div>
+
+  <!-- ───── AZURE RED HAT OPENSHIFT ───── -->
+  <div class="panel" id="tab-aro" role="tabpanel">
+    <div class="svc-head">
+      <div>
+        <span class="svc-eyebrow">Enterprise OpenShift</span>
+        <h3 class="svc-title">Azure Red Hat OpenShift</h3>
+      </div>
+      <span class="svc-best">Best for organisations standardised on Red Hat OpenShift</span>
+    </div>
+    <p class="svc-lead">A fully managed OpenShift service jointly engineered and operated by Microsoft and Red Hat. It combines Kubernetes orchestration with the opinionated OpenShift platform: integrated routing, OAuth, operators, an internal registry, developer workflows and Red Hat's enterprise support model.</p>
+
+    <div class="callout"><p><strong>Choose it when</strong> OpenShift is an enterprise standard, workloads depend on certified Red Hat operators or RHEL tooling, or a hybrid estate needs a consistent OpenShift operating model across Azure and on-premises. For a greenfield Azure-only Kubernetes platform, compare the licence and operating model carefully with AKS.</p></div>
+
+    <h4 class="block-title">Managed platform scope</h4>
+    <div class="grid-3">
+      <div class="feature-card">
+        <h3>Jointly operated service</h3>
+        <ul>
+          <li>Microsoft and Red Hat operate and support the control plane</li>
+          <li>Three control-plane nodes and a minimum production worker footprint</li>
+          <li>Integrated cluster upgrades and platform lifecycle management</li>
+        </ul>
+      </div>
+      <div class="feature-card" style="border-top:4px solid var(--az)">
+        <h3>OpenShift application platform</h3>
+        <ul>
+          <li>HAProxy Router, internal registry and OAuth</li>
+          <li>OperatorHub, Source-to-Image and developer console</li>
+          <li>Pipelines with Tekton and GitOps with Argo CD</li>
+        </ul>
+      </div>
+      <div class="feature-card">
+        <h3>Enterprise networking</h3>
+        <ul>
+          <li>Public or private API and ingress endpoints</li>
+          <li>User-defined routing for controlled egress</li>
+          <li>Integration with Azure private endpoints and network security controls</li>
+        </ul>
+      </div>
+    </div>
+
+    <h4 class="block-title">Resiliency levers</h4>
+    <div class="grid-3">
+      <div class="feature-card" style="border-left:4px solid var(--az)">
+        <h3>Three-zone topology</h3>
+        <p>Control-plane and worker capacity is distributed across availability zones in supported regions. Applications still need multiple replicas, topology constraints and disruption budgets to benefit from that infrastructure.</p>
+      </div>
+      <div class="feature-card" style="border-left:4px solid var(--az-green)">
+        <h3>MachineSets and autoscaling</h3>
+        <p>MachineSets define repeatable worker pools and the cluster autoscaler adds capacity when pods cannot be scheduled. Separate critical, general and specialised workloads into appropriately sized pools.</p>
+      </div>
+      <div class="feature-card" style="border-left:4px solid var(--az-purple)">
+        <h3>GitOps reconciliation</h3>
+        <p>OpenShift GitOps continuously reconciles cluster and application state from source control. Configuration drift is visible and recoverable, while versioned manifests support repeatable regional recovery.</p>
+      </div>
+    </div>
+
+    <h4 class="block-title">Reference architecture</h4>
+    <div class="diagram-shell">
+      <div class="diagram-box" data-diagram="aro"></div>
+      <aside class="diagram-info is-idle">
+        <span class="di-kind">Component detail</span>
+        <p class="di-title">Hover a component</p>
+        <p class="di-body">Move your pointer over any box in the diagram to see why that component matters for resiliency.</p>
+      </aside>
+    </div>
+    <div class="legend">
+      <span><i class="lg-client"></i>Client</span><span><i class="lg-edge"></i>Edge / network</span><span><i class="lg-compute"></i>Compute</span><span><i class="lg-data"></i>Data</span><span><i class="lg-ops"></i>Operations</span>
+    </div>
+
+    <div class="callout callout-danger"><p><strong>Operational and cost warning</strong> &mdash; ARO reduces control-plane operations but remains a full container platform. Worker VMs, OpenShift licences, network services, logging and platform engineering all contribute to total cost. It is strongest where OpenShift standardisation produces value across a sizeable application estate.</p></div>
+  </div>
+
+  <!-- ───── MICROSOFT FOUNDRY AGENT SERVICE ───── -->
+  <div class="panel" id="tab-foundry" role="tabpanel">
+    <div class="svc-head">
+      <div>
+        <span class="svc-eyebrow">Managed AI agent runtime</span>
+        <h3 class="svc-title">Microsoft Foundry Agent Service</h3>
+      </div>
+      <span class="svc-best">Best for governed, observable enterprise AI agents</span>
+    </div>
+    <p class="svc-lead">A managed platform for building, deploying and scaling AI agents. Foundry supports configuration-only prompt agents, managed real-time voice agents, code-based hosted agents, and ephemeral agents that call the Responses API directly. A common runtime brings model access, tools, identity, networking, tracing, evaluation and publishing together.</p>
+
+    <div class="callout callout-purple"><p><strong>Choose it when</strong> the application needs an agent that reasons across models and tools, maintains conversations, or acts through enterprise systems &mdash; and those behaviours require central identity, content safety, tracing, evaluation and lifecycle governance. It is an agent platform, not a replacement for general web hosting.</p></div>
+
+    <h4 class="block-title">Choose how to build</h4>
+    <div class="matrix-wrap"><table class="gov-table" style="margin:0;min-width:920px">
+      <thead><tr><th>Dimension</th><th>Prompt agent</th><th>Voice-based prompt agent</th><th>Hosted agent</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Authoring surface</strong></td><td>Foundry portal, SDK or REST</td><td>Agent definition through portal, SDK or REST</td><td>Agent Framework, LangGraph, OpenAI Agents SDK, Anthropic Agent SDK, GitHub Copilot SDK or custom code</td></tr>
+        <tr><td><strong>Runtime code to maintain</strong></td><td>None &mdash; configure instructions, model and tools</td><td>None for managed voice orchestration</td><td>Your agent logic, supplied as a container image or source-code ZIP</td></tr>
+        <tr><td><strong>Compute</strong></td><td>Fully managed</td><td>Fully managed with Voice Live</td><td>Foundry-managed container compute with session isolation</td></tr>
+        <tr><td><strong>Managed endpoint</strong></td><td>Yes</td><td>Yes &mdash; real-time WebSocket</td><td>Yes</td></tr>
+        <tr><td><strong>Autoscale</strong></td><td>Automatic by request volume</td><td>Managed by Foundry and Voice Live</td><td>Automatic by session and request volume</td></tr>
+        <tr><td><strong>Microsoft Entra identity</strong></td><td>Supported</td><td>Supported</td><td>Automatic dedicated identity per agent</td></tr>
+        <tr><td><strong>Cost model</strong></td><td>Model inference plus tool usage</td><td>Voice Live, speech and model usage</td><td>Model inference, tools and container compute</td></tr>
+        <tr><td><strong>Best for</strong></td><td>Fast delivery where custom orchestration is unnecessary</td><td>Low-latency spoken experiences without hosting the voice stack</td><td>Custom orchestration, multi-agent systems and framework-specific logic</td></tr>
+      </tbody>
+    </table></div>
+    <p class="matrix-note">Voice-based prompt agents and some related voice capabilities are preview features. Review current support, availability and SLA boundaries before production use.</p>
+
+    <div class="grid-3">
+      <div class="feature-card">
+        <h3>Agent Runtime</h3>
+        <p>Hosts and scales agents, manages conversations and tool calls, and exposes managed endpoints. Hosted-agent sessions run in isolated compute and can connect to a bring-your-own virtual network.</p>
+      </div>
+      <div class="feature-card" style="border-top:4px solid var(--az)">
+        <h3>Tools and toolboxes</h3>
+        <p>Curate web search, file search, code interpreter, memory, functions, OpenAPI and remote MCP servers behind one versioned, governed MCP-compatible endpoint with central authentication.</p>
+      </div>
+      <div class="feature-card">
+        <h3>Publishing and protocols</h3>
+        <p>Version agents, publish stable endpoints and distribute through Microsoft Copilot, Teams and the Entra Agent Registry. Supported patterns include OpenResponses, Activity, Invocations and A2A protocols.</p>
+      </div>
+    </div>
+
+    <h4 class="block-title">Enterprise reliability and governance</h4>
+    <div class="grid-3">
+      <div class="feature-card" style="border-left:4px solid var(--az)">
+        <h3>Identity and network isolation</h3>
+        <p>Use Microsoft Entra identity and Azure RBAC to govern who can create, invoke and manage agents. Prompt agents support private networking; hosted-agent sessions can run in VM-isolated sandboxes attached to a customer virtual network.</p>
+      </div>
+      <div class="feature-card" style="border-left:4px solid var(--az-green)">
+        <h3>Guardrails and safe tool use</h3>
+        <p>Integrated content filters and guardrails help mitigate unsafe output and prompt-injection risks, including cross-prompt injection. Tool connections support keys, managed identity, OAuth on-behalf-of and unauthenticated access where appropriate.</p>
+      </div>
+      <div class="feature-card" style="border-left:4px solid var(--az-purple)">
+        <h3>Trace, evaluate and optimise</h3>
+        <p>Application Insights integration provides end-to-end traces and metrics. Evaluate quality before publishing, monitor production behaviour, and use Agent Optimizer preview to improve instructions, skills, tool descriptions and model choices.</p>
+      </div>
+    </div>
+
+    <div class="callout"><p><strong>Ephemeral-agent option</strong> &mdash; an application can call the Foundry Responses API directly and keep its instructions, tools and model choice in application code. This avoids a persistent agent resource while retaining catalog models, platform tools, project data, on-behalf-of authentication and project-level observability.</p></div>
+
+    <h4 class="block-title">Reference architecture</h4>
+    <div class="diagram-shell">
+      <div class="diagram-box" data-diagram="foundry"></div>
+      <aside class="diagram-info is-idle">
+        <span class="di-kind">Component detail</span>
+        <p class="di-title">Hover a component</p>
+        <p class="di-body">Move your pointer over any box in the diagram to see why that component matters for resiliency.</p>
+      </aside>
+    </div>
+    <div class="legend">
+      <span><i class="lg-client"></i>Client</span><span><i class="lg-edge"></i>Edge / network</span><span><i class="lg-compute"></i>Compute</span><span><i class="lg-data"></i>Data</span><span><i class="lg-ops"></i>Operations</span>
+    </div>
+
+    <div class="callout callout-warn"><p><strong>Cost &amp; reliability note</strong> &mdash; prompt-agent cost is primarily model inference and tool usage; hosted agents add container compute, and voice agents add speech and Voice Live charges. Set token and tool-call budgets, choose an appropriate model for each step, trace failures end to end, and design tools to be idempotent before allowing an agent to take consequential actions.</p></div>
+  </div>
+  </div>
+</section>
+
+<!-- ══════════ DECISION GUIDE ══════════ -->
+<section id="decide" class="section section-alt"><div class="container-xl px-3">
+  <h2 class="section-title">Decision guide</h2>
+  <p class="section-lead">Start with the workload shape and the operating model the team can sustain. The simplest platform that satisfies the non-negotiable requirements is usually the most resilient choice.</p>
+
+  <table class="gov-table">
+    <thead><tr><th>Workload or requirement</th><th>Recommended starting point</th><th>Why</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Traditional .NET, Java, Node or Python web app</strong></td><td>Azure App Service</td><td>Fast migration path, managed runtime, deployment slots, autoscale and strong private-networking options.</td></tr>
+      <tr><td><strong>Bursty event processing or small HTTP functions</strong></td><td>Azure Functions on Flex Consumption</td><td>Scale to zero, always-ready capacity, VNet integration and event-native bindings.</td></tr>
+      <tr><td><strong>SaaS, ERP or B2B system integration</strong></td><td>Azure Logic Apps</td><td>Connector ecosystem, durable run history, retries and low-code exception handling reduce bespoke plumbing.</td></tr>
+      <tr><td><strong>React, Angular, Vue or static content front end</strong></td><td>Azure Static Web Apps</td><td>Global edge delivery, managed TLS and authentication, plus automatic pull-request environments.</td></tr>
+      <tr><td><strong>Containerised API or worker without Kubernetes needs</strong></td><td>Azure Container Apps</td><td>Serverless scale, revisions, health probes, KEDA and managed ingress without cluster operations.</td></tr>
+      <tr><td><strong>Custom operators, service mesh, GPU pools or platform APIs</strong></td><td>Azure Kubernetes Service</td><td>Full Kubernetes extensibility and control, provided a platform engineering team owns the lifecycle.</td></tr>
+      <tr><td><strong>Short-lived isolated container task</strong></td><td>Azure Container Instances</td><td>Starts quickly, bills per second and requires no persistent server or cluster.</td></tr>
+      <tr><td><strong>Large Spring Boot portfolio</strong></td><td>Azure Spring Apps</td><td>Purpose-built runtime, discovery, configuration, blue-green deployment and Tanzu capabilities.</td></tr>
+      <tr><td><strong>Enterprise standard is Red Hat OpenShift</strong></td><td>Azure Red Hat OpenShift</td><td>Joint Microsoft and Red Hat operations with the full supported OpenShift application platform.</td></tr>
+      <tr><td><strong>AI agent using models, tools and enterprise data</strong></td><td>Microsoft Foundry Agent Service</td><td>Managed agent runtime, identity, toolboxes, tracing, evaluation, guardrails and publishing lifecycle.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-success"><p><strong>Architecture principle</strong> &mdash; high availability is not a product checkbox. Pair the selected platform with zone-aware capacity, a resilient data tier, queue-based load levelling where appropriate, tested deployment rollback, end-to-end observability and a rehearsed regional recovery procedure.</p></div>
+</div></section>
+
+<footer class="footer"><div class="container-xl px-3"><div class="cols">
+  <div>
+    <h4>Azure Application Hosting Options</h4>
+    <p>A concise platform-selection guide prepared for a Mayer Brown customer discussion. It compares service capabilities and highlights the architecture decisions that materially improve resiliency.</p>
+    <p><strong>Important:</strong> service features, regional availability, pricing and lifecycle guidance evolve. Verify current requirements against Microsoft Learn, the Azure Pricing Calculator and the applicable Azure service-level agreement before implementation.</p>
+  </div>
+  <div>
+    <h4>Microsoft Learn</h4>
+    <p>
+      <a href="https://learn.microsoft.com/azure/app-service/" target="_blank" rel="noopener">App Service</a><br>
+      <a href="https://learn.microsoft.com/azure/azure-functions/" target="_blank" rel="noopener">Azure Functions</a><br>
+      <a href="https://learn.microsoft.com/azure/logic-apps/" target="_blank" rel="noopener">Logic Apps</a><br>
+      <a href="https://learn.microsoft.com/azure/static-web-apps/" target="_blank" rel="noopener">Static Web Apps</a><br>
+      <a href="https://learn.microsoft.com/azure/container-apps/" target="_blank" rel="noopener">Container Apps</a>
+    </p>
+  </div>
+  <div>
+    <h4>More documentation</h4>
+    <p>
+      <a href="https://learn.microsoft.com/azure/aks/" target="_blank" rel="noopener">AKS</a><br>
+      <a href="https://learn.microsoft.com/azure/container-instances/" target="_blank" rel="noopener">Container Instances</a><br>
+      <a href="https://learn.microsoft.com/azure/spring-apps/" target="_blank" rel="noopener">Spring Apps</a><br>
+      <a href="https://learn.microsoft.com/azure/openshift/" target="_blank" rel="noopener">Red Hat OpenShift</a><br>
+      <a href="https://learn.microsoft.com/azure/foundry/agents/overview" target="_blank" rel="noopener">Foundry Agent Service</a>
+    </p>
+  </div>
+</div></div></footer>
+
+<script>
+function initializePage() {
+  const buttons = [...document.querySelectorAll('.tabbtn')];
+  const panels = [...document.querySelectorAll('.panel')];
+  const tabbar = document.querySelector('.tabbar');
+
+  const activateTab = button => {
+    const targetId = `tab-${button.dataset.tab}`;
+
+    buttons.forEach(item => {
+      const isActive = item === button;
+      item.classList.toggle('is-active', isActive);
+      item.setAttribute('aria-selected', String(isActive));
+      item.tabIndex = isActive ? 0 : -1;
+    });
+
+    panels.forEach(panel => {
+      const isActive = panel.id === targetId;
+      panel.classList.toggle('is-active', isActive);
+      panel.hidden = !isActive;
+    });
+  };
+
+  buttons.forEach(button => {
+    button.type = 'button';
+    button.setAttribute('aria-controls', `tab-${button.dataset.tab}`);
+  });
+
+  tabbar?.addEventListener('click', event => {
+    const button = event.target.closest('.tabbtn');
+    if (button && tabbar.contains(button)) activateTab(button);
+  });
+
+  tabbar?.addEventListener('keydown', event => {
+    if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+
+    const currentIndex = Math.max(0, buttons.indexOf(document.activeElement));
+    let nextIndex = currentIndex;
+    if (event.key === 'ArrowLeft') nextIndex = (currentIndex - 1 + buttons.length) % buttons.length;
+    if (event.key === 'ArrowRight') nextIndex = (currentIndex + 1) % buttons.length;
+    if (event.key === 'Home') nextIndex = 0;
+    if (event.key === 'End') nextIndex = buttons.length - 1;
+
+    event.preventDefault();
+    activateTab(buttons[nextIndex]);
+    buttons[nextIndex].focus();
+  });
+
+  activateTab(buttons.find(button => button.classList.contains('is-active')) || buttons[0]);
+
+  const C = [24, 248, 472, 696, 920];
+  const R = [48, 158, 268, 378];
+  const n = (id, col, row, label, sub, kind, info) => ({
+    id, x: C[col], y: R[row], w: 180, h: 74, label, sub, kind, info
+  });
+  const zone = label => [{ x: 458, y: 24, w: 432, h: 342, label }];
+
+  const diagrams = {
+    appservice: {
+      zones: zone('ZONE-REDUNDANT APP SERVICE PLAN'),
+      nodes: [
+        n('client',0,1,'Users','HTTPS requests','client','Clients should use retry with jitter for safe, idempotent requests and resolve the application through a resilient global endpoint.'),
+        n('edge',1,1,'Front Door + WAF','Global routing · TLS · health probes','edge','Front Door detects regional or application-endpoint failure, blocks common web attacks, and can route users to a healthy secondary region.'),
+        n('plan',2,1,'App Service Plan','Premium v3 · zone redundant','compute','Premium and Isolated plans can spread workers across availability zones. Keep at least two instances, and three for stronger zone-failure capacity.'),
+        n('az1',3,0,'App instance — AZ 1','Health check enabled','compute','An independent worker in availability zone 1 serves traffic only while the configured health endpoint reports healthy.'),
+        n('az2',3,1,'App instance — AZ 2','Health check enabled','compute','A second-zone worker preserves serving capacity when another datacentre or worker fails.'),
+        n('az3',3,2,'App instance — AZ 3','Health check enabled','compute','A third-zone worker allows maintenance or a zone incident without reducing the application to a single remaining instance.'),
+        n('data',4,1,'Azure SQL','Zone redundant · failover group','data','The application tier is only as available as its data tier. Zone redundancy protects locally, while a failover group supports regional recovery.'),
+        n('slot',2,3,'Deployment slot','Warm · validate · swap','ops','A staging slot warms the new build and validates configuration before traffic moves. Swap back immediately if production checks fail.'),
+        n('obs',1,3,'Application Insights','Availability tests · alerts','ops','Synthetic tests and dependency telemetry detect failures before users report them and provide the signal needed for automated or human recovery.')
+      ],
+      edges: [['client','edge'],['edge','plan'],['plan','az1'],['plan','az2'],['plan','az3'],['az2','data'],['slot','plan'],['obs','plan']]
+    },
+    functions: {
+      zones: zone('ZONE-REDUNDANT FLEX CONSUMPTION FUNCTION APP'),
+      nodes: [
+        n('client',0,1,'Event sources','HTTP · Event Grid · schedules','client','Treat producers as independent failure domains and make every event carry a stable identifier for deduplication.'),
+        n('edge',1,1,'Service Bus + DLQ','Buffer · retry · dead-letter','edge','A durable broker absorbs bursts and downstream outages. Dead-lettering isolates poison messages instead of blocking the whole stream.'),
+        n('app',2,1,'Function App','Flex Consumption · VNet','compute','Flex Consumption combines scale-to-zero with optional always-ready instances, private networking and zone redundancy.'),
+        n('az1',3,0,'Always-ready instance','AZ 1 · no cold start','compute','Always-ready capacity handles latency-sensitive traffic immediately and preserves a warm worker in one zone.'),
+        n('az2',3,1,'Elastic instances','AZ 2 · event scaled','compute','The platform adds instances as event pressure rises. Configure concurrency and maximum scale to protect dependencies.'),
+        n('az3',3,2,'Elastic instances','AZ 3 · event scaled','compute','Cross-zone elastic capacity keeps processing during a zone incident and spreads burst load.'),
+        n('data',4,1,'Cosmos DB + Storage','State · leases · checkpoints','data','Durable, replicated storage holds function state, leases and checkpoints so a replacement instance can resume safely.'),
+        n('durable',2,3,'Durable Functions','Checkpointed orchestration','ops','Durable orchestration persists each step and resumes after host failure, avoiding fragile in-memory workflow state.'),
+        n('obs',1,3,'Application Insights','Failures · latency · sampling','ops','Trace triggers through dependencies, alert on dead-letter growth and throttling, and tune sampling so high scale does not hide rare failures.')
+      ],
+      edges: [['client','edge'],['edge','app'],['app','az1'],['app','az2'],['app','az3'],['az2','data'],['durable','app'],['obs','app']]
+    },
+    logicapps: {
+      zones: zone('ZONE-REDUNDANT LOGIC APP STANDARD'),
+      nodes: [
+        n('client',0,1,'Event source','SaaS · ERP · partner · timer','client','External systems fail independently. Durable triggers and correlation identifiers keep integrations recoverable and traceable.'),
+        n('edge',1,1,'Service Bus queue','Load levelling · dead-letter','edge','A queue decouples senders from workflow availability, absorbs bursts and retains messages while a downstream system is unavailable.'),
+        n('app',2,1,'Logic App Standard','Single tenant · WS plan','compute','Standard hosting supports private networking, stateful and stateless workflows, built-in connectors and zone-redundant capacity.'),
+        n('az1',3,0,'Stateful workflow','Checkpointed actions','compute','Each action result is persisted so the workflow can continue after a host restart without repeating completed work unnecessarily.'),
+        n('az2',3,1,'Retry policy','Back-off · timeout','compute','Per-action retry policies absorb transient dependency failures while bounded timeouts prevent a workflow from hanging forever.'),
+        n('az3',3,2,'Scope + run-after','Catch · compensate','compute','Scopes and run-after conditions implement failure handling and compensating actions when a multi-system transaction only partially succeeds.'),
+        n('data',4,1,'Managed connectors','1,400+ systems and protocols','data','Managed and built-in connectors standardise authentication, throttling and protocol handling across enterprise systems.'),
+        n('network',2,3,'VNet integration','Private endpoints · ASE v3','ops','Private networking keeps integration traffic off the public internet and lets workflows reach protected back-end systems.'),
+        n('obs',4,3,'Log Analytics','Run history · alerts','ops','Central run history and diagnostics make failed actions replayable and reveal recurring partner or connector failures.')
+      ],
+      edges: [['client','edge'],['edge','app'],['app','az1'],['app','az2'],['app','az3'],['az2','data'],['network','app'],['az3','obs']]
+    },
+    swa: {
+      zones: [{ x: 234, y: 24, w: 208, h: 342, label: 'GLOBAL EDGE DISTRIBUTION' }],
+      nodes: [
+        n('client',0,1,'Users','Browser and mobile clients','client','The application shell should load independently of its API and present graceful degraded states when dynamic services are unavailable.'),
+        n('pop1',1,0,'Edge POP — Americas','Cached static assets','edge','A nearby point of presence serves immutable front-end assets with low latency and reduces dependency on an origin region.'),
+        n('pop2',1,1,'Edge POP — Europe','Cached static assets','edge','Geographic edge distribution keeps the static experience available when another location has a network incident.'),
+        n('pop3',1,2,'Edge POP — Asia Pacific','Cached static assets','edge','A third distribution region reduces latency and removes a single regional delivery path.'),
+        n('app',2,1,'Static Web App','Managed auth · routing · TLS','compute','The managed service controls routing, authentication and certificates, eliminating the web-server patching and capacity failure modes.'),
+        n('api',3,1,'Managed or linked API','Azure Functions · App Service','compute','Keep dynamic logic in a separately scalable API. The front end can remain available and explain a temporary API failure to users.'),
+        n('data',4,1,'Azure SQL / Cosmos DB','Zone-redundant data','data','Use a resilient managed database and design APIs to retry transient failures rather than exposing them directly to the browser.'),
+        n('preview',2,3,'Preview environment','One environment per pull request','ops','Preview environments validate routes, auth and API compatibility before merge, reducing deployment-related outages.'),
+        n('obs',3,3,'Application Insights','Browser + API telemetry','ops','Correlate browser failures with API traces to distinguish edge, client, API and data-tier problems quickly.')
+      ],
+      edges: [['client','pop1'],['client','pop2'],['client','pop3'],['pop2','app'],['app','api'],['api','data'],['preview','app'],['api','obs']]
+    },
+    aca: {
+      zones: zone('ZONE-REDUNDANT CONTAINER APPS ENVIRONMENT'),
+      nodes: [
+        n('client',0,1,'Users and clients','HTTPS · APIs · events','client','Clients should enter through a stable global endpoint and retry only safe requests with bounded exponential back-off.'),
+        n('edge',1,1,'Front Door + WAF','Global health routing','edge','Front Door protects the public surface and can fail traffic to another Container Apps environment during a regional incident.'),
+        n('ingress',2,1,'Built-in ingress','Envoy · TLS · traffic split','edge','Managed ingress removes load-balancer operations and supports weighted traffic across immutable revisions for canary rollout.'),
+        n('az1',3,0,'Replica — AZ 1','Startup · readiness · liveness','compute','Health probes prevent a slow-starting or unhealthy replica from receiving traffic and restart it when recovery is impossible in-process.'),
+        n('az2',3,1,'Replica — AZ 2','KEDA event scale','compute','A second-zone replica maintains capacity during zone failure and scales from workload signals such as queue depth.'),
+        n('az3',3,2,'Replica — AZ 3','Minimum replicas for critical API','compute','Critical services should keep a nonzero minimum across zones to avoid cold-start and zero-capacity risk.'),
+        n('data',4,1,'SQL / Cosmos DB','Private endpoint · zone redundant','data','Private connectivity and a zone-redundant data tier prevent the stateless compute layer from depending on a public or single-zone database.'),
+        n('revision',2,0,'Blue-green revision','Canary · instant rollback','ops','Immutable revisions let you validate a new image under partial traffic and route back without rebuilding if telemetry degrades.'),
+        n('job',2,3,'Container Apps Job','Scheduled · manual · event','ops','Finite background work runs as a job rather than consuming an always-on API replica, with independent retry and scale settings.'),
+        n('obs',4,3,'Log Analytics','Replica · revision · system logs','ops','Central logs and metrics identify failing revisions, scaling bottlenecks and platform events across the managed environment.')
+      ],
+      edges: [['client','edge'],['edge','ingress'],['ingress','az1'],['ingress','az2'],['ingress','az3'],['az2','data'],['revision','ingress'],['job','ingress'],['az3','obs']]
+    },
+    aks: {
+      zones: zone('AKS NODE POOL SPREAD ACROSS AVAILABILITY ZONES'),
+      nodes: [
+        n('client',0,1,'Users and clients','HTTPS · APIs · events','client','A global entry point shields clients from cluster changes and supports failover to a second cluster or region.'),
+        n('edge',1,1,'Front Door / App Gateway','WAF · health routing','edge','The edge tier terminates and protects internet traffic, while health routing removes an unavailable cluster or ingress endpoint.'),
+        n('ingress',2,1,'Ingress controller','NGINX · Gateway API · Istio','edge','Run multiple ingress replicas with disruption budgets and anti-affinity. A single ingress pod recreates a single point of failure.'),
+        n('az1',3,0,'Node pool — AZ 1','Pods · topology spread','compute','Application replicas are scheduled onto nodes in the first zone using topology constraints rather than best-effort placement.'),
+        n('az2',3,1,'Node pool — AZ 2','Pods · PDB · readiness','compute','Readiness probes and pod disruption budgets keep only healthy pods in service and preserve capacity during node maintenance.'),
+        n('az3',3,2,'Node pool — AZ 3','Surge upgrade capacity','compute','Spare capacity in a third zone lets node-image and Kubernetes upgrades proceed without evicting too much serving capacity.'),
+        n('data',4,1,'SQL / Cosmos DB','Private endpoint · failover','data','Prefer managed data services over in-cluster production databases unless the team can operate stateful Kubernetes recovery end to end.'),
+        n('scale',2,3,'HPA + KEDA + autoscaler','Pods first · nodes second','ops','Pod scaling and node scaling must be tuned together. A pod request cannot help if no node has enough allocatable capacity.'),
+        n('obs',4,3,'Container Insights','Control plane · nodes · pods','ops','Monitor saturation, pending pods, probe failures, evictions and API-server health before they become an application outage.')
+      ],
+      edges: [['client','edge'],['edge','ingress'],['ingress','az1'],['ingress','az2'],['ingress','az3'],['az2','data'],['scale','ingress'],['az3','obs']]
+    },
+    aci: {
+      zones: zone('INDEPENDENT CONTAINER GROUPS PINNED BY ZONE'),
+      nodes: [
+        n('client',0,1,'Trigger or work item','Queue · schedule · pipeline','client','Persist the work request before starting compute so a failed container group can be recreated without losing the task.'),
+        n('edge',1,1,'Logic Apps / Functions','Create · monitor · retry','edge','An external durable orchestrator supplies the scheduling, retry, timeout and cleanup capabilities ACI does not provide itself.'),
+        n('registry',2,1,'Azure Container Registry','Geo-replicated images','data','Geo-replication keeps the image available near each execution region and avoids making recovery depend on a distant registry.'),
+        n('az1',3,0,'Container group — AZ 1','restartPolicy · isolated task','compute','The group runs independently in one zone. A failure is handled by creating a replacement group, not by assuming in-place healing.'),
+        n('az2',3,1,'Container group — AZ 2','restartPolicy · isolated task','compute','A second group or task partition in another zone reduces the blast radius of zone-specific compute failure.'),
+        n('az3',3,2,'Container group — AZ 3','restartPolicy · isolated task','compute','A third-zone execution target enables external orchestration to retry away from an impaired zone.'),
+        n('data',4,1,'Blob / Queue output','Durable results · status','data','Write progress and results outside the container because its writable filesystem disappears when the group is deleted.'),
+        n('pool',1,3,'Standby pool','Pre-provisioned warm capacity','ops','Standby pools reduce startup latency when repeated on-demand execution must begin predictably.'),
+        n('obs',4,3,'Log Analytics','Exit code · stdout · duration','ops','Capture logs, exit codes and duration centrally so the orchestrator can distinguish success, retriable failure and permanent failure.')
+      ],
+      edges: [['client','edge'],['edge','registry'],['registry','az1'],['registry','az2'],['registry','az3'],['az2','data'],['pool','edge'],['az3','obs']]
+    },
+    spring: {
+      zones: zone('ZONE-REDUNDANT AZURE SPRING APPS DEPLOYMENT'),
+      nodes: [
+        n('client',0,1,'Users and clients','HTTPS · APIs','client','Clients use a stable gateway endpoint while individual Spring services and deployments change behind it.'),
+        n('edge',1,1,'Spring Cloud Gateway','Routing · rate limits · TLS','edge','The managed gateway centralises routing and throttling, protecting downstream services from overload and topology changes.'),
+        n('platform',2,1,'Registry + Config','Discovery · central configuration','compute','Managed service registration removes hard-coded endpoints, while central configuration supports consistent, auditable recovery settings.'),
+        n('az1',3,0,'App instance — AZ 1','Blue deployment','compute','A healthy application instance in the first zone serves traffic and participates in service discovery.'),
+        n('az2',3,1,'App instance — AZ 2','Green deployment','compute','The next version can run beside the current deployment for validation before production traffic is switched.'),
+        n('az3',3,2,'App instance — AZ 3','Multiple replicas','compute','A third-zone replica preserves capacity through a zone incident and platform maintenance.'),
+        n('data',4,1,'Azure SQL / Cosmos DB','Private endpoint · failover','data','Private, zone-redundant data services keep application state outside the runtime and independently recoverable.'),
+        n('scale',2,3,'Autoscale rules','CPU · memory · schedule','ops','Autoscale adds application instances before sustained load exhausts the existing deployment; minimum capacity protects latency-sensitive services.'),
+        n('obs',4,3,'Application Insights','Distributed tracing','ops','Distributed traces follow requests across Spring services and reveal whether latency or failure originates in the gateway, application or data tier.')
+      ],
+      edges: [['client','edge'],['edge','platform'],['platform','az1'],['platform','az2'],['platform','az3'],['az2','data'],['scale','platform'],['az3','obs']]
+    },
+    aro: {
+      zones: zone('OPENSHIFT WORKERS ACROSS AVAILABILITY ZONES'),
+      nodes: [
+        n('client',0,1,'Users and clients','HTTPS · APIs','client','A stable global endpoint decouples users from cluster ingress and enables regional failover without client configuration changes.'),
+        n('edge',1,1,'Front Door + WAF','Global routing · protection','edge','Front Door probes the OpenShift ingress and can remove a failed region while enforcing web-application protections.'),
+        n('router',2,1,'OpenShift Router','HAProxy · routes · TLS','edge','Multiple router replicas expose OpenShift routes. Anti-affinity and disruption budgets keep ingress available during worker maintenance.'),
+        n('az1',3,0,'Worker pool — AZ 1','Pods · operators','compute','MachineSets provide repeatable worker capacity in each zone while pod placement rules distribute application replicas.'),
+        n('az2',3,1,'Worker pool — AZ 2','Pods · PDB','compute','Pod disruption budgets protect minimum service capacity during voluntary eviction and cluster upgrades.'),
+        n('az3',3,2,'Worker pool — AZ 3','Autoscaled capacity','compute','The cluster autoscaler expands a MachineSet when pods cannot be scheduled, preserving capacity under load.'),
+        n('data',4,1,'SQL / Cosmos DB','Private endpoint · failover','data','Keep critical application data on resilient managed services unless there is a deliberate, tested plan for stateful OpenShift operations.'),
+        n('control',2,0,'Managed control plane','Three nodes · jointly operated','ops','Microsoft and Red Hat operate a highly available control plane, but application availability still depends on worker and pod design.'),
+        n('gitops',2,3,'OpenShift GitOps','Argo CD reconciliation','ops','GitOps recreates desired application and platform state from version control and makes configuration drift visible.'),
+        n('obs',4,3,'Cluster monitoring','Nodes · pods · routes','ops','Platform and workload signals reveal scheduling pressure, route failures, operator degradation and node issues before service loss.')
+      ],
+      edges: [['client','edge'],['edge','router'],['router','az1'],['router','az2'],['router','az3'],['az2','data'],['control','router'],['gitops','router'],['az3','obs']]
+    },
+    foundry: {
+      zones: zone('MICROSOFT FOUNDRY — MANAGED AGENT RUNTIME'),
+      nodes: [
+        n('client',0,1,'Users and channels','Teams · Copilot · your app','client','Channels should authenticate users, preserve correlation identifiers and present a safe fallback when an agent or dependency is unavailable.'),
+        n('edge',1,1,'Published endpoint','Versioned · RBAC · A2A','edge','A stable published endpoint separates consumers from agent revisions and applies identity, access control and supported interaction protocols.'),
+        n('runtime',2,1,'Agent Runtime','Prompt · voice · hosted','compute','The managed runtime hosts and scales agents, manages conversations and tool calls, and removes infrastructure operations from prompt and voice agents.'),
+        n('models',3,0,'Foundry model catalog','Swap models without code change','compute','Multiple supported models reduce hard coupling. Select the smallest suitable model and use deployment capacity appropriate to latency and availability needs.'),
+        n('tools',3,1,'Toolbox — managed MCP','Search · code · functions · APIs','compute','A versioned toolbox centralises authentication and governance for tools, so updates can be tested once and promoted consistently across agents.'),
+        n('sandbox',3,2,'Hosted-agent sandbox','VM-isolated session · BYO VNet','compute','Hosted-agent sessions run custom code in isolated compute and can connect privately to customer resources through a bring-your-own virtual network.'),
+        n('data',4,1,'Cosmos DB · AI Search · Storage','State · grounding · customer control','data','Bring-your-own resources can hold conversation state, grounded content and files under customer networking, residency and operational controls.'),
+        n('safety',2,3,'Guardrails + Agent ID','XPIA filters · Entra identity','ops','Dedicated identity supports least privilege, while guardrails and content filters reduce unsafe output and cross-prompt-injection risk.'),
+        n('obs',4,3,'Tracing + evaluations','App Insights · Agent Optimizer','ops','Trace model and tool decisions, evaluate quality before promotion, monitor regressions and optimise instructions or model selection with evidence.')
+      ],
+      edges: [['client','edge'],['edge','runtime'],['runtime','models'],['runtime','tools'],['runtime','sandbox'],['models','data'],['tools','data'],['sandbox','data'],['safety','runtime'],['tools','obs']]
+    }
+  };
+
+  const colors = {
+    client: { fill: '#f6f8fa', stroke: '#8c959f', name: 'Client' },
+    edge: { fill: '#ddf4ff', stroke: '#0078d4', name: 'Edge / network' },
+    compute: { fill: '#e6e0f8', stroke: '#8661c5', name: 'Compute' },
+    data: { fill: '#dbf4ea', stroke: '#107c10', name: 'Data' },
+    ops: { fill: '#fff4ce', stroke: '#9a6700', name: 'Operations' }
+  };
+
+  const escapeHtml = value => String(value)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
+
+  function wrap(value, max = 27) {
+    const words = String(value).split(/\s+/);
+    const lines = [];
+    let line = '';
+    words.forEach(word => {
+      if (!line || `${line} ${word}`.length <= max) line = line ? `${line} ${word}` : word;
+      else { lines.push(line); line = word; }
+    });
+    if (line) lines.push(line);
+    return lines.slice(0, 3);
+  }
+
+  function edgePath(a, b) {
+    if (a.x === b.x) {
+      const downward = b.y > a.y;
+      const y1 = downward ? a.y + a.h : a.y;
+      const y2 = downward ? b.y : b.y + b.h;
+      return `M ${a.x + a.w / 2} ${y1} V ${y2}`;
+    }
+    const rightward = b.x > a.x;
+    const x1 = rightward ? a.x + a.w : a.x;
+    const x2 = rightward ? b.x : b.x + b.w;
+    const y1 = a.y + a.h / 2;
+    const y2 = b.y + b.h / 2;
+    if (y1 === y2) return `M ${x1} ${y1} L ${x2} ${y2}`;
+    const middle = (x1 + x2) / 2;
+    return `M ${x1} ${y1} H ${middle} V ${y2} H ${x2}`;
+  }
+
+  function textLines(lines, x, firstY, className, gap) {
+    return `<text class="${className}" text-anchor="middle">${lines.map((line, index) =>
+      `<tspan x="${x}" y="${firstY + index * gap}">${escapeHtml(line)}</tspan>`
+    ).join('')}</text>`;
+  }
+
+  function renderDiagram(host) {
+    const key = host.dataset.diagram;
+    const diagram = diagrams[key];
+    if (!diagram) return;
+    const byId = Object.fromEntries(diagram.nodes.map(node => [node.id, node]));
+    const markerId = `${key}-arrow`;
+
+    const zones = (diagram.zones || []).map(item => `
+      <g class="zone">
+        <rect x="${item.x}" y="${item.y}" width="${item.w}" height="${item.h}" rx="14"></rect>
+        <text x="${item.x + 14}" y="${item.y + 19}">${escapeHtml(item.label)}</text>
+      </g>`).join('');
+
+    const edges = diagram.edges.map(([from, to], index) => {
+      const id = `${key}-e${index}`;
+      const path = edgePath(byId[from], byId[to]);
+      return `
+        <path id="${id}" class="edge" d="${path}" marker-end="url(#${markerId})"></path>
+        <circle class="dot" r="4.5">
+          <animateMotion dur="3s" begin="${(index * 0.35).toFixed(2)}s" repeatCount="indefinite">
+            <mpath href="#${id}"></mpath>
+          </animateMotion>
+        </circle>`;
+    }).join('');
+
+    const nodes = diagram.nodes.map(node => {
+      const palette = colors[node.kind];
+      const labelLines = wrap(node.label, 23);
+      const subLines = wrap(node.sub, 29);
+      const labelTop = node.y + (labelLines.length === 1 ? 26 : 19);
+      const subTop = node.y + 48 + Math.max(0, labelLines.length - 1) * 4;
+      return `
+        <g class="node" tabindex="0" role="button"
+           data-label="${escapeHtml(node.label)}"
+           data-info="${escapeHtml(node.info)}"
+           data-kind="${escapeHtml(palette.name)}">
+          <title>${escapeHtml(`${node.label}: ${node.info}`)}</title>
+          <rect class="bg" x="${node.x}" y="${node.y}" width="${node.w}" height="${node.h}" rx="10"
+                fill="${palette.fill}" stroke="${palette.stroke}" stroke-width="1.7"></rect>
+          ${textLines(labelLines, node.x + node.w / 2, labelTop, 'n-label', 15)}
+          ${textLines(subLines, node.x + node.w / 2, subTop, 'n-sub', 12)}
+        </g>`;
+    }).join('');
+
+    host.innerHTML = `
+      <svg viewBox="0 0 1120 470" role="img" aria-label="${escapeHtml(`${key} resiliency reference architecture`)}">
+        <defs>
+          <marker id="${markerId}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#8c9aaa"></path>
+          </marker>
+        </defs>
+        ${zones}${edges}${nodes}
+      </svg>`;
+
+    const info = host.closest('.diagram-shell').querySelector('.diagram-info');
+    const showInfo = event => {
+      const node = event.currentTarget;
+      info.classList.remove('is-idle');
+      info.querySelector('.di-kind').textContent = node.dataset.kind;
+      info.querySelector('.di-title').textContent = node.dataset.label;
+      info.querySelector('.di-body').textContent = node.dataset.info;
+    };
+    host.querySelectorAll('.node').forEach(node => {
+      node.addEventListener('mouseenter', showInfo);
+      node.addEventListener('focus', showInfo);
+    });
+  }
+
+  document.querySelectorAll('[data-diagram]').forEach(renderDiagram);
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initializePage, { once: true });
+} else {
+  initializePage();
+}
+</script>
+</body>
+</html>
